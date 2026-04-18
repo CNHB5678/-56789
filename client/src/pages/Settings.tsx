@@ -79,56 +79,7 @@ export default function SettingsPage() {
       />
 
       <div className="max-w-3xl mx-auto space-y-6">
-        {/* Profile Section */}
-        <Card title="个人信息" className="shadow-sm">
-          <div className="flex items-start gap-6 mb-6">
-            <div className="relative">
-              <Avatar size={96} className="bg-gradient-to-br from-purple-600 to-pink-600">U</Avatar>
-              <Upload
-                showUploadList={false}
-                beforeUpload={() => false}
-                className="absolute bottom-0 right-0"
-              >
-                <Button 
-                  shape="circle" 
-                  size="small" 
-                  icon={<UploadIcon size={12} />}
-                  className="bg-purple-600 border-none hover:bg-purple-700"
-                />
-              </Upload>
-            </div>
-            <div>
-              <Title level={4} className="!mb-1">用户名</Title>
-              <Text type="secondary">点击头像上传新头像</Text>
-            </div>
-          </div>
 
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={{ username: '瓦粒Agent用户', email: 'user@example.com' }}
-            onFinish={handleSaveProfile}
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Form.Item name="username" label="用户名" rules={[{ required: true }]}>
-                <Input size="large" />
-              </Form.Item>
-              <Form.Item name="email" label="邮箱" rules={[{ required: true, type: 'email' }]}>
-                <Input size="large" />
-              </Form.Item>
-            </div>
-
-            <Form.Item name="bio" label="个人简介">
-              <Input.TextArea rows={3} placeholder="介绍一下你自己..." />
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" size="large" htmlType="submit" className="!bg-purple-600">
-                保存修改
-              </Button>
-            </Form.Item>
-          </Form>
-        </Card>
 
         {/* Platform Connections */}
         <Card title="平台连接" className="shadow-sm">
