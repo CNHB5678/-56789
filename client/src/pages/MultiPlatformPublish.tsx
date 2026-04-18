@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Card, Button, List, Typography, Tag, Space, Checkbox, DatePicker, TimePicker, message, Tabs, Upload, Form, Input, Select } from 'antd';
-import { Upload, Calendar, Clock, Send, CheckCircle, PlayCircle, Plus } from 'lucide-react';
+import { Card, Button, List, Typography, Tag, Space, Checkbox, DatePicker, TimePicker, message, Tabs, Upload as AntdUpload, Form, Input, Select } from 'antd';
+import { Upload as UploadIcon, Calendar, Clock, Send, CheckCircle, PlayCircle, Plus } from 'lucide-react';
 import { useAppStore } from '../store';
 import type { Content } from '../types';
 
