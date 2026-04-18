@@ -115,6 +115,7 @@ export default function AppLayout() {
         onCancel={() => setIsProfileModalOpen(false)}
         onOk={handleSaveProfile}
         width={400}
+        centered
       >
         <Form form={form} layout="vertical">
           <Form.Item
