@@ -8,7 +8,7 @@ import ContentGeneration from './pages/ContentGeneration';
 import CommentsReply from './pages/CommentsReply';
 import MultiPlatformPublish from './pages/MultiPlatformPublish';
 import Analytics from './pages/Analytics';
-import Settings from './pages/Settings';
+import SettingsPage from './pages/Settings';
 import './index.css';
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
             <Route path="comments" element={<CommentsReply />} />
             <Route path="publish" element={<MultiPlatformPublish />} />
             <Route path="analytics" element={<Analytics />} />
-            <Route path="settings" element={<Settings />} />
+            <Route path="settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>

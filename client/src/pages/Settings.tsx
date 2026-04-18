@@ -1,10 +1,10 @@
 import { Card, Typography, Form, Input, Button, Tabs, Space, Avatar, Upload, message, Switch, Select, Divider } from 'antd';
-import { User, Lock, Settings, CreditCard, Bell, Upload as UploadIcon, Link2 } from 'lucide-react';
+import { User, Lock, Settings as SettingsIcon, CreditCard, Bell, Upload as UploadIcon, Link2 } from 'lucide-react';
 
 const { Title, Paragraph, Text } = Typography;
 const { Option } = Select;
 
-export default function Settings() {
+export default function SettingsPage() {
   const [form] = Form.useForm();
 
   const handleSaveProfile = () => {
@@ -52,7 +52,7 @@ export default function Settings() {
             key: 'api',
             label: (
               <span className="flex items-center gap-2">
-                <Settings size={16} />
+                <SettingsIcon size={16} />
                 API 设置
               </span>
             ),
