@@ -15,7 +15,7 @@ const Navbar = () => {
 
   return (
     <nav className="bg-gradient-to-r from-primary-800 to-primary-600 text-white shadow-xl sticky top-0 z-50">
-      <div className="container mx-auto px-6 py-5">
+      <div className="container mx-auto px-6 py-4">
         <div className="flex justify-between items-center gap-6">
           <Link to="/" className="text-2xl font-bold flex items-center gap-4 transition-all hover:scale-105">
             {/* LOGO图标 */}
