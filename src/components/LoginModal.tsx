@@ -57,24 +57,6 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps) => {
         {/* 表单 */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* 登录方式选择 */}
-          <div className="grid grid-cols-2 gap-4">
-            <button
-              type="button"
-              className={`py-3 rounded-xl font-medium transition-all duration-300 ${authMode === 'login' ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
-              onClick={() => setAuthMode('login')}
-            >
-              登录
-            </button>
-            <button
-              type="button"
-              className={`py-3 rounded-xl font-medium transition-all duration-300 ${authMode === 'register' ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
-              onClick={() => setAuthMode('register')}
-            >
-              注册
-            </button>
-          </div>
-
-          {/* 登录方式选择 */}
           <div className="flex justify-center space-x-6">
             <button
               type="button"
@@ -228,14 +210,6 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps) => {
             </div>
           )}
 
-          {/* 提交按钮 */}
-          <button
-            type="submit"
-            className="w-full bg-primary-600 hover:bg-primary-700 text-white py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-[1.02]"
-          >
-            {authMode === 'login' ? '登录' : '注册'}
-          </button>
-
           {/* 其他选项 */}
           {loginMethod === 'email' && (
             <div className="flex justify-between items-center text-sm">
@@ -252,6 +226,24 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }: LoginModalProps) => {
               </a>
             </div>
           )}
+
+          {/* 登录方式选择 */}
+          <div className="grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              className={`py-3 rounded-xl font-medium transition-all duration-300 ${authMode === 'login' ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
+              onClick={() => setAuthMode('login')}
+            >
+              登录
+            </button>
+            <button
+              type="button"
+              className={`py-3 rounded-xl font-medium transition-all duration-300 ${authMode === 'register' ? 'bg-primary-600 text-white' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200'}`}
+              onClick={() => setAuthMode('register')}
+            >
+              注册
+            </button>
+          </div>
         </form>
       </div>
     </div>
