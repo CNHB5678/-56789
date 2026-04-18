@@ -1,0 +1,32 @@
+{
+  "name": "fullstack-app",
+  "version": "1.0.0",
+  "description": "Full-stack React + TypeScript + Express.js application",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "npm run build:client && npm run build:server",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "preview": "cd client && npm run preview",
+    "start": "cd server && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "express",
+    "fullstack",
+    "vite"
+  ],
+  "author": "",
+  "license": "MIT"
+}
