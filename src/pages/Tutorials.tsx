@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Clock, BookOpen, Star, TrendingUp } from 'lucide-react';
+import { Search, Filter, Clock, BookOpen, Star, TrendingUp, ChevronRight } from 'lucide-react';
 
 const Tutorials = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -96,14 +96,14 @@ const Tutorials = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
-      <div className="container mx-auto px-4 py-12">
-        <h1 className="text-3xl font-bold text-blue-900 mb-8">
+    <div className="min-h-screen bg-gradient-to-b from-primary-50 to-white">
+      <div className="container mx-auto px-4 py-16">
+        <h1 className="text-4xl font-bold text-primary-900 mb-12">
           AI教程
         </h1>
 
         {/* 搜索和筛选 */}
-        <div className="bg-white rounded-xl shadow-md p-6 mb-10">
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-12">
           <div className="flex flex-col md:flex-row gap-4">
             {/* 搜索框 */}
             <div className="flex-1">
@@ -113,9 +113,9 @@ const Tutorials = () => {
                   placeholder="搜索教程..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300"
                 />
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-neutral-400" size={20} />
               </div>
             </div>
 
@@ -124,7 +124,7 @@ const Tutorials = () => {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full pl-4 pr-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-4 pr-10 py-4 rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 appearance-none bg-white"
               >
                 {categories.map(category => (
                   <option key={category} value={category}>
@@ -139,7 +139,7 @@ const Tutorials = () => {
               <select
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
-                className="w-full pl-4 pr-10 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-4 pr-10 py-4 rounded-xl border border-neutral-300 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-300 appearance-none bg-white"
               >
                 {difficultyLevels.map(level => (
                   <option key={level} value={level}>
@@ -157,31 +157,31 @@ const Tutorials = () => {
             <Link
               key={tutorial.id}
               to={`/tutorials/${tutorial.id}`}
-              className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all"
+              className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 group"
             >
-              <div className="h-56 overflow-hidden">
+              <div className="h-60 overflow-hidden">
                 <img
                   src={tutorial.cover_image}
                   alt={tutorial.title}
-                  className="w-full h-full object-cover transition-transform hover:scale-110"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
               </div>
               <div className="p-6">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="bg-primary-100 text-primary-800 text-xs font-medium px-3 py-1 rounded-full">
                     {tutorial.category}
                   </span>
-                  <span className={`text-xs font-medium px-2.5 py-0.5 rounded ${tutorial.difficulty === '入门' ? 'bg-green-100 text-green-800' : tutorial.difficulty === '中级' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                  <span className={`text-xs font-medium px-3 py-1 rounded-full ${tutorial.difficulty === '入门' ? 'bg-green-100 text-green-800' : tutorial.difficulty === '中级' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                     {tutorial.difficulty}
                   </span>
                 </div>
-                <h3 className="text-xl font-semibold text-blue-900 mb-2">
+                <h3 className="text-xl font-semibold text-primary-900 mb-3 line-clamp-2 group-hover:text-primary-700 transition-colors duration-300">
                   {tutorial.title}
                 </h3>
-                <p className="text-gray-600 mb-4 line-clamp-2">
+                <p className="text-neutral-600 mb-6 line-clamp-2">
                   {tutorial.description}
                 </p>
-                <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
+                <div className="flex items-center justify-between text-sm text-neutral-600 mb-6">
                   <div className="flex items-center">
                     <Clock size={14} className="mr-1" />
                     <span>{tutorial.duration} 分钟</span>
@@ -193,11 +193,12 @@ const Tutorials = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center">
-                    <Star size={16} className="text-yellow-400 mr-1" />
-                    <span className="font-medium">{tutorial.rating}</span>
+                    <Star size={16} className="text-secondary-400 mr-1" />
+                    <span className="font-medium text-primary-900">{tutorial.rating}</span>
                   </div>
-                  <button className="bg-blue-700 hover:bg-blue-800 text-white py-2 px-4 rounded-lg transition-colors text-sm">
+                  <button className="bg-primary-600 hover:bg-primary-700 text-white py-2 px-6 rounded-lg transition-colors duration-300 flex items-center gap-2 group-hover:shadow-md">
                     开始学习
+                    <ChevronRight size={16} />
                   </button>
                 </div>
               </div>
@@ -206,21 +207,21 @@ const Tutorials = () => {
         </div>
 
         {/* 分页 */}
-        <div className="flex justify-center mt-12">
-          <div className="flex space-x-2">
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+        <div className="flex justify-center mt-16">
+          <div className="flex space-x-3">
+            <button className="w-12 h-12 flex items-center justify-center rounded-xl border border-neutral-300 text-neutral-600 hover:bg-primary-50 hover:text-primary-700 transition-all duration-300">
               上一页
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg bg-blue-700 text-white">
+            <button className="w-12 h-12 flex items-center justify-center rounded-xl bg-primary-600 text-white shadow-md">
               1
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+            <button className="w-12 h-12 flex items-center justify-center rounded-xl border border-neutral-300 text-neutral-600 hover:bg-primary-50 hover:text-primary-700 transition-all duration-300">
               2
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+            <button className="w-12 h-12 flex items-center justify-center rounded-xl border border-neutral-300 text-neutral-600 hover:bg-primary-50 hover:text-primary-700 transition-all duration-300">
               3
             </button>
-            <button className="w-10 h-10 flex items-center justify-center rounded-lg border border-gray-300 text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+            <button className="w-12 h-12 flex items-center justify-center rounded-xl border border-neutral-300 text-neutral-600 hover:bg-primary-50 hover:text-primary-700 transition-all duration-300">
               下一页
             </button>
           </div>
