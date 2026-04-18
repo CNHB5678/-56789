@@ -54,7 +54,7 @@ export default function Home() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex-1">
             <Title level={2} className="!text-white !mb-2">
-              欢迎使用个人IP打造Agent 🎉
+              欢迎使用瓦粒Agent 🎉
             </Title>
             <Paragraph className="!text-white/90 !text-lg !mb-0">
               打造懂你的数字分身，让AI帮你自动完成从选题到变现的全流程

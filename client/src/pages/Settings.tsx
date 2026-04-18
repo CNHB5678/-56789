@@ -106,7 +106,7 @@ export default function SettingsPage() {
           <Form
             form={form}
             layout="vertical"
-            initialValues={{ username: '个人IP打造者', email: 'user@example.com' }}
+            initialValues={{ username: '瓦粒Agent用户', email: 'user@example.com' }}
             onFinish={handleSaveProfile}
           >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -71,7 +71,7 @@ export default function AppLayout() {
             <Sparkles className="text-white" size={18} />
           </div>
           <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            个人IP Agent
+            瓦粒Agent
           </h1>
         </div>
         
