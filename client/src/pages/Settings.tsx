@@ -28,17 +28,8 @@ export default function SettingsPage() {
       </div>
 
       <Tabs
-        defaultActiveKey="profile"
+        defaultActiveKey="platforms"
         items={[
-          {
-            key: 'profile',
-            label: (
-              <span className="flex items-center gap-2">
-                <User size={16} />
-                个人资料
-              </span>
-            ),
-          },
           {
             key: 'platforms',
             label: (
