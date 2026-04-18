@@ -20,28 +20,28 @@ export default function Home() {
     { 
       title: '风格训练', 
       description: '创建你的专属风格模型',
-      icon: <Brain className="text-purple-600" size={28} />,
+      icon: <Brain className="text-purple-600" size={20} />,
       path: '/style',
       color: 'purple'
     },
     { 
       title: '生成内容', 
       description: 'AI智能生成脚本和文案',
-      icon: <Sparkles className="text-pink-600" size={28} />,
+      icon: <Sparkles className="text-pink-600" size={20} />,
       path: '/content',
       color: 'pink'
     },
     { 
       title: '评论回复', 
       description: 'AI自动回复粉丝评论',
-      icon: <MessageSquare className="text-blue-600" size={28} />,
+      icon: <MessageSquare className="text-blue-600" size={20} />,
       path: '/comments',
       color: 'blue'
     },
     { 
       title: '多平台发布', 
       description: '一键发布到各大平台',
-      icon: <Upload className="text-green-600" size={28} />,
+      icon: <Upload className="text-green-600" size={20} />,
       path: '/publish',
       color: 'green'
     },
@@ -51,7 +51,7 @@ export default function Home() {
     <div className="space-y-6">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-white">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="flex flex-col md:flex-row items-center justify-start gap-6">
           <div className="flex-1">
             <Title level={2} className="!text-white !mb-2">
               欢迎使用瓦粒Agent 🎉
@@ -63,7 +63,7 @@ export default function Home() {
           <Button 
             type="primary" 
             size="large" 
-            className="!bg-white !text-purple-600 !h-12 !px-8 !font-semibold shadow-lg"
+            className="!bg-white !text-purple-600 !h-12 !px-8 !font-semibold shadow-lg flex-shrink-0"
             onClick={() => navigate('/content')}
           >
             开始创作
@@ -122,19 +122,20 @@ export default function Home() {
         className="shadow-sm"
         extra={<Tag color="blue">推荐</Tag>}
       >
-        <Row gutter={[16, 16]}>
+        <Row gutter={[12, 12]}>
           {quickActions.map((action, idx) => (
             <Col xs={24} sm={12} md={6} key={idx}>
               <Card 
                 hoverable
-                className="text-center cursor-pointer border-2 border-transparent hover:border-purple-200"
+                className="text-center cursor-pointer border-2 border-transparent hover:border-purple-200 !p-3"
                 onClick={() => navigate(action.path)}
+                bodyStyle={{ padding: '12px' }}
               >
-                <div className={`w-16 h-16 mx-auto mb-4 rounded-2xl bg-${action.color}-50 flex items-center justify-center`}>
+                <div className={`w-12 h-12 mx-auto mb-3 rounded-xl bg-${action.color}-50 flex items-center justify-center`}>
                   {action.icon}
                 </div>
-                <Title level={4} className="!mb-2">{action.title}</Title>
-                <Paragraph className="!text-gray-500 !mb-0 !text-sm">
+                <Title level={5} className="!mb-1 !text-base">{action.title}</Title>
+                <Paragraph className="!text-gray-500 !mb-0 !text-xs">
                   {action.description}
                 </Paragraph>
               </Card>
