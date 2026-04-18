@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout as AntLayout, Menu, Avatar, Dropdown, Button, Modal, Form, Input, message } from 'antd';
-const { TextArea } = Input;
+import { Layout as AntLayout, Menu, Avatar, Dropdown, Button, message } from 'antd';
 import { 
   Home, 
   Brain, 
@@ -11,7 +10,6 @@ import {
   BarChart3, 
   Settings,
   LogOut,
-  User,
   ChevronRight
 } from 'lucide-react';
 
@@ -20,11 +18,8 @@ const { Header, Sider, Content } = AntLayout;
 export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [form] = Form.useForm();
   const [username, setUsername] = useState('用户');
   const [email, setEmail] = useState('user@example.com');
-  const [bio, setBio] = useState('');
   
   // 订阅信息
   const subscription = {
@@ -44,30 +39,7 @@ export default function AppLayout() {
     { key: '/settings', icon: <Settings size={24} />, label: '设置' },
   ];
 
-  const handleMenuClick = (key: string) => {
-    if (key === 'profile') {
-      form.setFieldsValue({ username, email, bio });
-      setIsProfileModalOpen(true);
-    }
-  };
-
-  const handleSaveProfile = () => {
-    form.validateFields().then(values => {
-      setUsername(values.username);
-      setEmail(values.email);
-      setBio(values.bio);
-      message.success('个人资料已更新！');
-      setIsProfileModalOpen(false);
-    });
-  };
-
   const userMenu = [
-    {
-      key: 'profile',
-      icon: <User size={16} />,
-      label: '个人资料',
-      onClick: () => handleMenuClick('profile'),
-    },
     {
       key: 'logout',
       icon: <LogOut size={16} />,
@@ -148,51 +120,7 @@ export default function AppLayout() {
         </Content>
       </AntLayout>
 
-      {/* 个人资料修改弹窗 */}
-      <Modal
-        title="修改个人资料"
-        open={isProfileModalOpen}
-        onCancel={() => setIsProfileModalOpen(false)}
-        onOk={handleSaveProfile}
-        width={500}
-        centered
-      >
-        <Form form={form} layout="vertical">
-          <div className="flex items-center gap-6 mb-6">
-            <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-2xl font-bold">{username.charAt(0)}</span>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold">{username}</h3>
-              <p className="text-gray-500">点击头像上传新头像</p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Form.Item
-              name="username"
-              label="用户名"
-              rules={[{ required: true, message: '请输入用户名' }]}
-            >
-              <Input placeholder="请输入用户名" size="large" />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="邮箱"
-              rules={[{ required: true, type: 'email', message: '请输入正确的邮箱' }]}
-            >
-              <Input placeholder="请输入邮箱" size="large" />
-            </Form.Item>
-          </div>
-          
-          <Form.Item
-            name="bio"
-            label="个人简介"
-          >
-            <TextArea rows={3} placeholder="介绍一下你自己..." />
-          </Form.Item>
-        </Form>
-      </Modal>
+
     </AntLayout>
     </div>
   );
