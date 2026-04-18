@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Menu, X, User, LogIn, LogOut, MessageSquare, Users, Search } from 'lucide-react';
+import { Menu, X, User, LogIn, LogOut, MessageSquare, Users, Search, Cpu } from 'lucide-react';
 import { useUserStore } from '../store/userStore';
 
 const Navbar = () => {
@@ -17,37 +17,54 @@ const Navbar = () => {
     <nav className="bg-gradient-to-r from-primary-800 to-primary-600 text-white shadow-xl sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold flex items-center gap-2 transition-all hover:scale-105">
-            <span className="text-secondary-400">回音</span>
-            <span className="text-white">AI导航</span>
+          <Link to="/" className="text-2xl font-bold flex items-center gap-3 transition-all hover:scale-105">
+            {/* LOGO图标 */}
+            <div className="w-10 h-10 rounded-full bg-secondary-500 flex items-center justify-center">
+              <Cpu size={24} />
+            </div>
+            <span className="text-white">瓦粒</span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-10">
-            <Link to="/navigate" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">导航</Link>
-            <Link to="/tutorials" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">教程</Link>
-            <Link to="/resources" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">资源工具</Link>
-            {user && (
-              <>
-                <Link to="/social" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">社交</Link>
-                <Link to="/profile" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">个人中心</Link>
-                <button 
-                  onClick={handleLogout} 
-                  className="flex items-center gap-2 px-4 py-2 rounded-full bg-primary-700 hover:bg-primary-600 transition-all duration-300 hover:shadow-lg"
-                >
-                  <LogOut size={16} />
-                  <span>退出</span>
-                </button>
-              </>
-            )}
+          <div className="hidden md:flex items-center space-x-8 flex-1 justify-center">
+            <Link to="/navigate" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">网站导航</Link>
+            <Link to="/tutorials" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">AI教程</Link>
+            <Link to="/resources" className="font-medium hover:text-secondary-400 transition-all duration-300 hover:translate-y-[-2px]">实用工具</Link>
+          </div>
+
+          {/* Search Box */}
+          <div className="hidden md:flex items-center flex-1 justify-end">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-300" />
+              </div>
+              <input
+                type="text"
+                placeholder="搜索..."
+                className="pl-10 pr-4 py-2 rounded-full bg-primary-700 border border-primary-600 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all duration-300 w-64"
+              />
+            </div>
+          </div>
+
+          {/* Login Button */}
+          <div className="hidden md:flex items-center ml-4">
             {!user && (
               <Link 
                 to="/login" 
-                className="flex items-center gap-2 px-4 py-2 rounded-full bg-secondary-500 hover:bg-secondary-600 transition-all duration-300 hover:shadow-lg"
+                className="p-3 rounded-full bg-secondary-500 hover:bg-secondary-600 transition-all duration-300 hover:shadow-lg"
+                aria-label="登录"
               >
-                <LogIn size={16} />
-                <span>登录</span>
+                <LogIn size={20} />
               </Link>
+            )}
+            {user && (
+              <button 
+                onClick={handleLogout} 
+                className="p-3 rounded-full bg-primary-700 hover:bg-primary-600 transition-all duration-300 hover:shadow-lg"
+                aria-label="退出"
+              >
+                <LogOut size={20} />
+              </button>
             )}
           </div>
 
@@ -70,31 +87,37 @@ const Navbar = () => {
                 className="px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                导航
+                网站导航
               </Link>
               <Link 
                 to="/tutorials" 
                 className="px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                教程
+                AI教程
               </Link>
               <Link 
                 to="/resources" 
                 className="px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                资源工具
+                实用工具
               </Link>
+              {/* Mobile Search */}
+              <div className="px-4 py-3">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-300" />
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="搜索..."
+                    className="w-full pl-10 pr-4 py-2 rounded-lg bg-primary-700 border border-primary-600 text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-transparent transition-all duration-300"
+                  />
+                </div>
+              </div>
               {user && (
                 <>
-                  <Link 
-                    to="/social" 
-                    className="px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    社交
-                  </Link>
                   <Link 
                     to="/profile" 
                     className="px-4 py-3 rounded-lg hover:bg-primary-700 transition-colors"
