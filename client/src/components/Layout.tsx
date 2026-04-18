@@ -12,7 +12,8 @@ import {
   Settings,
   LogOut,
   User,
-  ChevronRight
+  ChevronRight,
+  CreditCard
 } from 'lucide-react';
 
 const { Header, Sider, Content } = AntLayout;
@@ -21,6 +22,7 @@ export default function AppLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isSubscriptionModalOpen, setIsSubscriptionModalOpen] = useState(false);
   const [form] = Form.useForm();
   const [username, setUsername] = useState('用户');
   const [email, setEmail] = useState('user@example.com');
@@ -48,6 +50,8 @@ export default function AppLayout() {
     if (key === 'profile') {
       form.setFieldsValue({ username, email, bio });
       setIsProfileModalOpen(true);
+    } else if (key === 'subscription') {
+      setIsSubscriptionModalOpen(true);
     }
   };
 
@@ -67,6 +71,12 @@ export default function AppLayout() {
       icon: <User size={16} />,
       label: '个人资料',
       onClick: () => handleMenuClick('profile'),
+    },
+    {
+      key: 'subscription',
+      icon: <CreditCard size={16} />,
+      label: '订阅管理',
+      onClick: () => handleMenuClick('subscription'),
     },
     {
       key: 'logout',
@@ -192,6 +202,49 @@ export default function AppLayout() {
             <TextArea rows={3} placeholder="介绍一下你自己..." />
           </Form.Item>
         </Form>
+      </Modal>
+
+      {/* 订阅管理弹窗 */}
+      <Modal
+        title="订阅管理"
+        open={isSubscriptionModalOpen}
+        onCancel={() => setIsSubscriptionModalOpen(false)}
+        footer={null}
+        width={500}
+        centered
+      >
+        <div className="space-y-6">
+          <div className="flex items-center justify-between p-6 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl text-white">
+            <div>
+              <h3 className="text-xl font-bold">{subscription.plan}</h3>
+              <p className="text-purple-100">3个平台，无限生成</p>
+            </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold">{subscription.price}</div>
+              <div className="text-purple-200">/{subscription.period}</div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-500">到期时间</p>
+              <p className="text-lg font-semibold">{subscription.expires}</p>
+            </div>
+            <div className="p-4 bg-gray-50 rounded-lg">
+              <p className="text-sm text-gray-500">本月使用量</p>
+              <p className="text-lg font-semibold">42 / 无限</p>
+            </div>
+          </div>
+
+          <div className="flex gap-4">
+            <Button type="primary" size="large" className="flex-1 !bg-purple-600">
+              升级到企业版
+            </Button>
+            <Button size="large" className="flex-1">
+              管理订阅
+            </Button>
+          </div>
+        </div>
       </Modal>
     </AntLayout>
     </div>
