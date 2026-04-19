@@ -11,9 +11,9 @@ import SubscriptionPage from './pages/SubscriptionPage'
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
         <Navbar />
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 pt-24">
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/audio" element={<AudioPage />} />
