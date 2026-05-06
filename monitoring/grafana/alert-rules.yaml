@@ -1,0 +1,193 @@
+# 企业级 API 网关告警规则配置
+# 基于 Prometheus 的 Grafana Alerting
+
+groups:
+  - name: api_gateway_alerts
+    interval: 30s
+    rules:
+      # 1. 服务可用性告警
+      - alert: APISIXServiceDown
+        expr: up{job="apisix"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: availability
+        annotations:
+          summary: "APISIX 服务不可用"
+          description: "APISIX 实例 {{ $labels.instance }} 已停止服务超过 1 分钟"
+          runbook: "https://yourcompany.com/runbooks/apisix-down"
+      
+      # 2. 高错误率告警
+      - alert: HighErrorRate
+        expr: rate(apisix_http_status{code=~"5.."}[5m]) > 0.1
+        for: 5m
+        labels:
+          severity: critical
+          category: performance
+        annotations:
+          summary: "错误率过高"
+          description: "API 网关 5xx 错误率超过 10%，当前为 {{ $value }}"
+      
+      - alert: WarningErrorRate
+        expr: rate(apisix_http_status{code=~"5.."}[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "错误率升高"
+          description: "API 网关 5xx 错误率超过 5%，当前为 {{ $value }}"
+      
+      # 3. 高延迟告警
+      - alert: HighLatencyP99
+        expr: histogram_quantile(0.99, sum(rate(apisix_http_latency_bucket[5m])) by (le, instance)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+          category: performance
+        annotations:
+          summary: "P99 延迟过高"
+          description: "API 网关 P99 延迟超过 500ms，当前为 {{ $value }}s"
+      
+      # 4. 限流触发告警
+      - alert: RateLimitTriggered
+        expr: rate(apisix_http_status{code="429"}[5m]) > 0
+        for: 1m
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "限流被触发"
+          description: "检测到限流触发，可能有攻击或突发流量"
+      
+      # 5. 上游服务故障告警
+      - alert: UpstreamServiceDown
+        expr: apisix_upstream_status == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: dependency
+        annotations:
+          summary: "上游服务故障"
+          description: "上游服务 {{ $labels.upstream }} 健康检查失败"
+      
+      # 6. 资源使用率告警
+      - alert: HighCPUUsage
+        expr: sum(rate(container_cpu_usage_seconds_total{container="apisix"}[5m])) by (instance) > 0.7
+        for: 5m
+        labels:
+          severity: warning
+          category: resource
+        annotations:
+          summary: "CPU 使用率过高"
+          description: "APISIX 实例 CPU 使用率超过 70%"
+      
+      - alert: HighMemoryUsage
+        expr: sum(container_memory_usage_bytes{container="apisix"}) by (instance) > 6e9
+        for: 5m
+        labels:
+          severity: warning
+          category: resource
+        annotations:
+          summary: "内存使用率过高"
+          description: "APISIX 实例内存使用超过 6GB"
+      
+      # 7. 异常流量告警
+      - alert: TrafficSpike
+        expr: rate(apisix_http_requests_total[5m]) > 2 * avg_over_time(rate(apisix_http_requests_total[5m])[24h:5m])
+        for: 2m
+        labels:
+          severity: warning
+          category: traffic
+        annotations:
+          summary: "流量突增"
+          description: "API 网关请求量超过平均 2 倍，当前为 {{ $value }} rps"
+      
+      # 8. 证书即将过期告警
+      - alert: SSLCertificateExpiry
+        expr: (certmanager_certificate_expiration_timestamp_seconds - time()) < 86400 * 30
+        for: 1h
+        labels:
+          severity: warning
+          category: security
+        annotations:
+          summary: "SSL 证书即将过期"
+          description: "证书 {{ $labels.name }} 将在 30 天内过期"
+      
+      # 9. Nacos 配置中心告警
+      - alert: NacosServiceDown
+        expr: up{job="nacos"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: dependency
+        annotations:
+          summary: "Nacos 服务不可用"
+          description: "Nacos 实例 {{ $labels.instance }} 已停止服务"
+      
+      # 10. Redis 告警
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          category: dependency
+        annotations:
+          summary: "Redis 服务不可用"
+          description: "Redis 实例 {{ $labels.instance }} 已停止服务"
+      
+      - alert: RedisHighMemoryUsage
+        expr: redis_memory_usage_bytes / redis_memory_max_bytes > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          category: resource
+        annotations:
+          summary: "Redis 内存使用率过高"
+          description: "Redis 内存使用率超过 80%"
+      
+      # 11. PostgreSQL 告警
+      - alert: PostgreSQLDown
+        expr: up{job="postgresql"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          category: dependency
+        annotations:
+          summary: "PostgreSQL 服务不可用"
+          description: "PostgreSQL 实例 {{ $labels.instance }} 已停止服务"
+      
+      # 12. 配置同步告警
+      - alert: ConfigSyncDelay
+        expr: time() - last_config_sync_timestamp > 300
+        for: 5m
+        labels:
+          severity: warning
+          category: config
+        annotations:
+          summary: "配置同步延迟"
+          description: "配置同步超过 5 分钟未更新"
+  
+  # 第二组：基础设施告警
+  - name: infrastructure_alerts
+    interval: 1m
+    rules:
+      - alert: DiskSpaceWarning
+        expr: (1 - node_filesystem_avail_bytes{job="node"} / node_filesystem_size_bytes{job="node"}) * 100 > 80
+        for: 5m
+        labels:
+          severity: warning
+          category: infrastructure
+        annotations:
+          summary: "磁盘空间警告"
+          description: "节点 {{ $labels.instance }} 磁盘使用率超过 80%"
+      
+      - alert: DiskSpaceCritical
+        expr: (1 - node_filesystem_avail_bytes{job="node"} / node_filesystem_size_bytes{job="node"}) * 100 > 90
+        for: 5m
+        labels:
+          severity: critical
+          category: infrastructure
+        annotations:
+          summary: "磁盘空间严重不足"
+          description: "节点 {{ $labels.instance }} 磁盘使用率超过 90%"

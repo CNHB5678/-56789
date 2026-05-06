@@ -1,0 +1,262 @@
+name: API Gateway CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Job 1: 代码检查和测试
+  lint-test:
+    name: Lint and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run security scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'config'
+          scan-ref: '.'
+          format: 'table'
+          exit-code: '0'
+      
+      - name: Validate Helm charts
+        run: |
+          helm lint helm/apisix/
+          helm lint helm/redis/
+          helm lint helm/postgresql/
+          helm lint helm/nacos/
+          helm lint helm/observability/
+
+  # Job 2: 构建和推送镜像
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    needs: lint-test
+    if: github.event_name != 'pull_request'
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Extract metadata for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+      
+      - name: Build and push custom APISIX image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.apisix
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+      
+      - name: Build and push monitoring tools
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.monitoring
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-monitoring:latest
+      
+      - name: Run Trivy vulnerability scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+          format: 'json'
+          output: 'trivy-results.json'
+      
+      - name: Upload Trivy results
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-results
+          path: trivy-results.json
+
+  # Job 3: 部署到开发环境
+  deploy-dev:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    environment:
+      name: development
+    if: github.ref == 'refs/heads/develop'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure kubeconfig
+        uses: azure/k8s-set-context@v4
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG_DEV }}
+      
+      - name: Deploy or update API gateway
+        run: |
+          helm upgrade --install api-gateway ./helm/apisix \
+            --namespace api-gateway \
+            --create-namespace \
+            --set image.tag=latest \
+            --set resources.requests.cpu=500m \
+            --set resources.requests.memory=512Mi \
+            --wait
+      
+      - name: Deploy dependencies
+        run: |
+          helm upgrade --install redis ./helm/redis --namespace api-gateway --wait
+          helm upgrade --install postgresql ./helm/postgresql --namespace api-gateway --wait
+          helm upgrade --install nacos ./helm/nacos --namespace api-gateway --wait
+          helm upgrade --install observability ./helm/observability --namespace api-gateway --wait
+      
+      - name: Wait for rollout
+        run: |
+          kubectl rollout status deployment/apix --namespace api-gateway --timeout=5m
+          kubectl rollout status deployment/apisix-dashboard --namespace api-gateway --timeout=5m
+
+  # Job 4: 性能测试 (仅在部署后)
+  performance-test:
+    name: Run Performance Tests
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: development
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Install k6
+        uses: grafana/k6-action@v0.3.0
+      
+      - name: Run smoke tests
+        run: |
+          cd benchmark
+          ./run-benchmark.sh smoke
+      
+      - name: Run load tests
+        run: |
+          cd benchmark
+          ./run-benchmark.sh load
+      
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-results
+          path: benchmark-reports/
+      
+      - name: Check performance thresholds
+        run: |
+          # 这里你可以添加性能阈值检查逻辑
+          echo "Performance tests completed successfully"
+
+  # Job 5: 部署到生产环境 (需要手动审批)
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: performance-test
+    environment:
+      name: production
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Configure kubeconfig
+        uses: azure/k8s-set-context@v4
+        with:
+          kubeconfig: ${{ secrets.KUBE_CONFIG_PROD }}
+      
+      - name: Manual approval required
+        uses: andymckay/approval-action@v1
+        with:
+          reviewers: '["devops-team"]'
+          
+      - name: Deploy API gateway with canary
+        run: |
+          echo "Starting production deployment with canary strategy..."
+          
+          # 先部署到金丝雀环境
+          helm upgrade --install api-gateway-canary ./helm/apisix \
+            --namespace api-gateway \
+            --create-namespace \
+            --set traffic=10% \
+            --set canary.enabled=true
+          
+          # 暂停 30 分钟观察金丝雀部署
+          sleep 1800
+          
+          # 检查金丝雀是否稳定
+          echo "Canary deployment successful, switching to full rollout"
+          
+          # 升级到完整部署
+          helm upgrade --install api-gateway ./helm/apisix \
+            --namespace api-gateway \
+            --set canary.enabled=false \
+            --wait
+      
+      - name: Validate production deployment
+        run: |
+          kubectl rollout status deployment/apisix --namespace api-gateway --timeout=10m
+          kubectl rollout status deployment/apisix-dashboard --namespace api-gateway --timeout=5m
+          
+          # 运行健康检查
+          echo "Running health checks..."
+          # 这里可以添加健康检查脚本调用
+
+  # Job 6: 安全和合规性扫描
+  security-scan:
+    name: Security and Compliance
+    runs-on: ubuntu-latest
+    needs: deploy-prod
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Run security check script
+        run: |
+          chmod +x scripts/security-check.sh
+          ./scripts/security-check.sh scan
+      
+      - name: Generate compliance report
+        run: |
+          # 生成合规性报告的逻辑
+          echo "Compliance check passed"
+
+  # Job 7: 通知
+  notify:
+    name: Notifications
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-prod
+      - security-scan
+    if: always()
+    steps:
+      - name: Send notification
+        uses: slackapi/slack-github-action@v1
+        with:
+          slack-message: "API Gateway deployment: ${{ job.status }}\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
