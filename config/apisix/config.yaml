@@ -1,0 +1,268 @@
+# APISIX 配置文件
+# 企业级生产配置
+
+deployment:
+  admin:
+    allow_admin:
+      - 0.0.0.0/0
+    admin_key:
+      - name: admin
+        key: edd1c9f034335f136f87ad84b625c8f1
+        role: admin
+  role: data_plane
+  role_data_plane:
+    config_provider: nacos
+    nacos:
+      host:
+        - nacos-0:8848
+        - nacos-1:8848
+        - nacos-2:8848
+      prefix: /nacos
+      username: nacos
+      password: nacos
+      namespace: public
+      group: APISIX
+      data_id: apisix.yml
+
+apisix:
+  node_listen: 9080
+  node_listen_ssl: 9443
+  enable_ipv6: false
+  enable_control: true
+  config_center: nacos
+
+  # 配置本地缓存，避免控制面故障影响数据面
+  config_center:
+    cache:
+      enable: true
+      duration: 3600
+
+  # 数据面 ID
+  id: "apisix-node-{{.Hostname}}"
+
+  # 自定义 Nginx 配置
+  nginx_config:
+    worker_processes: auto
+    error_log: "logs/error.log warn"
+    worker_rlimit_nofile: 20480
+    events:
+      worker_connections: 10620
+    http:
+      access_log: "logs/access.log combined"
+      keepalive_timeout: 60s
+      client_max_body_size: 0
+      autoindex: off
+      lua_shared_dicts:
+        prometheus-metrics: 16m
+        plugin-limit-req: 16m
+        plugin-limit-count: 16m
+        plugin-limit-conn: 16m
+        plugin-limit-count-redis: 16m
+        plugin-limit-req-redis: 16m
+
+# 插件配置
+plugins:
+  - prometheus
+  - limit-req
+  - limit-count
+  - limit-conn
+  - key-auth
+  - jwt-auth
+  - node-status
+  - health-check
+  - proxy-cache
+  - proxy-mirror
+  - request-id
+  - zipkin
+  - opentelemetry
+  - request-validation
+  - response-rewrite
+  - fault-injection
+  - traffic-split
+  - cors
+  - redirect
+  - rewrite
+  - echo
+  - log-rotate
+
+# 插件属性配置
+plugin_attr:
+  prometheus:
+    export_addr:
+      ip: 0.0.0.0
+      port: 9091
+    export_uri: /apisix/prometheus/metrics
+    metrics:
+      - name: apisix_http_status
+        stat_labels: ["code"]
+      - name: apisix_http_latency
+        stat_labels: ["type"]
+      - name: apisix_bandwidth
+        stat_labels: ["type"]
+      - name: apisix_etcd_modify_indexes
+      - name: apisix_http_requests_total
+      - name: apisix_etcd_reachable
+      - name: apisix_node_info
+      - name: apisix_upstream_status
+  node-status:
+    ip: 127.0.0.1
+    port: 8080
+
+# 数据面健康检查
+discovery:
+  dns:
+    servers:
+      - 127.0.0.1:53
+    resolv_conf: /etc/resolv.conf
+
+# 上游健康检查
+health_check:
+  active:
+    type: http
+    timeout: 3
+    concurrency: 10
+    host: 127.0.0.1
+    port: 80
+    http_path: /health
+    healthy:
+      interval: 10
+      successes: 2
+    unhealthy:
+      interval: 5
+      http_failures: 3
+      timeouts: 3
+  passive:
+    type: http
+    healthy:
+      http_statuses:
+        - 200
+        - 201
+        - 204
+        - 206
+        - 301
+        - 302
+        - 304
+        - 307
+        - 308
+      successes: 5
+    unhealthy:
+      http_statuses:
+        - 429
+        - 500
+        - 501
+        - 502
+        - 503
+        - 504
+        - 505
+      timeouts: 3
+      failures: 3
+
+# 日志配置
+apisix:
+  enable_server_tokens: false
+  enable_control: true
+  enable_debug: false
+  # 访问日志格式（JSON格式，便于分析）
+  access_log:
+    format: '{
+      "time": "$time_iso8601",
+      "request_id": "$request_id",
+      "remote_addr": "$remote_addr",
+      "remote_user": "$remote_user",
+      "status": "$status",
+      "body_bytes_sent": "$body_bytes_sent",
+      "request_time": "$request_time",
+      "request": "$request",
+      "http_referrer": "$http_referer",
+      "http_user_agent": "$http_user_agent",
+      "http_host": "$http_host",
+      "scheme": "$scheme",
+      "request_length": "$request_length",
+      "upstream_status": "$upstream_status",
+      "upstream_response_time": "$upstream_response_time"
+    }'
+
+# 限制配置
+apisix:
+  router:
+    radixtree_uri_with_parameter: true
+  http:
+    max_body_size: 1073741824
+    client_body_buffer_size: 8192
+    client_max_body_size: 1073741824
+    real_ip_header: X-Forwarded-For
+    real_ip_recursive: on
+    real_ip_from:
+      - 0.0.0.0/0
+  ssl:
+    protocols: TLSv1.2 TLSv1.3
+    ciphers: ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384
+    prefer_server_ciphers: on
+    listen_port: 9443
+  stream_proxy:
+    tcp:
+      - 9100
+    udp:
+      - 9200
+  dns_resolver:
+    - 8.8.8.8
+    - 114.114.114.114
+  dns_resolver_valid: 300
+  ssl:
+    ssl_trusted_certificate: /etc/ssl/certs/ca-certificates.crt
+
+# 流控配置
+plugin_attr:
+  limit-req:
+    rate: 1000
+    burst: 200
+    key_type: "var"
+    key: "remote_addr"
+    rejected_code: 503
+    rejected_msg: "Too many requests, please try again later"
+  limit-count:
+    redis_host: redis-0
+    redis_port: 6379
+    redis_password: ""
+    redis_timeout: 1000
+    redis_cluster_nodes:
+      - redis-0:6379
+      - redis-1:6379
+      - redis-2:6379
+      - redis-3:6379
+      - redis-4:6379
+      - redis-5:6379
+    redis_cluster_name: "apisix-redis-cluster"
+    redis_database: 0
+    policy: "redis-cluster"
+    count: 1000
+    time_window: 60
+    key_type: "var"
+    key: "remote_addr"
+    rejected_code: 503
+    rejected_msg: "Too many requests, please try again later"
+  proxy-cache:
+    cache_ttl: 300
+    cache_control: false
+    cache_methods:
+      - GET
+      - HEAD
+    cache_zones:
+      - name: disk_cache_one
+        memory_size: 1000m
+        disk_size: 20000m
+        disk_path: "/tmp/apisix_cache"
+    cache_bypass: false
+    hide_client_cache_headers: false
+  opentelemetry:
+    sampler:
+      name: always_on
+    resource:
+      service.name: APISIX
+      service.instance.id: "${hostname}"
+    collector:
+      address: "skywalking-oap:11800"
+      request_timeout: 3
+  zipkin:
+    endpoint: "http://skywalking-oap:9411/api/v2/spans"
+    sample_ratio: 1.0

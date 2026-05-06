@@ -1,0 +1,126 @@
+# APISIX 路由配置示例
+# 企业级生产配置
+
+# 基础路由 - 最简单的配置
+apiVersion: apisix.apache.org/v2beta3
+kind: ApisixRoute
+metadata:
+  name: simple-route
+  namespace: api-gateway
+spec:
+  http:
+  - name: route1
+    match:
+      paths:
+      - /api/*
+      methods: ["GET", "POST", "PUT", "DELETE"]
+    backends:
+    - serviceName: backend-service
+      servicePort: 80
+      weight: 100
+
+---
+# 带限流的路由
+apiVersion: apisix.apache.org/v2beta3
+kind: ApisixRoute
+metadata:
+  name: rate-limit-route
+  namespace: api-gateway
+spec:
+  http:
+  - name: route2
+    match:
+      paths:
+      - /api/limited/*
+    backends:
+    - serviceName: backend-service
+      servicePort: 80
+    plugins:
+    - name: limit-req
+      enable: true
+      config:
+        rate: 100
+        burst: 50
+        key_type: var
+        key: remote_addr
+        rejected_code: 429
+        rejected_msg: "Too Many Requests"
+
+---
+# 带 JWT 鉴权的路由
+apiVersion: apisix.apache.org/v2beta3
+kind: ApisixRoute
+metadata:
+  name: jwt-route
+  namespace: api-gateway
+spec:
+  http:
+  - name: route3
+    match:
+      paths:
+      - /api/secure/*
+    backends:
+    - serviceName: backend-service
+      servicePort: 80
+    plugins:
+    - name: jwt-auth
+      enable: true
+
+---
+# 灰度发布路由
+apiVersion: apisix.apache.org/v2beta3
+kind: ApisixRoute
+metadata:
+  name: canary-route
+  namespace: api-gateway
+spec:
+  http:
+  - name: route4
+    match:
+      paths:
+      - /api/canary/*
+    backends:
+    - serviceName: v1-service
+      servicePort: 80
+      weight: 90
+    - serviceName: v2-service
+      servicePort: 80
+      weight: 10
+
+---
+# 带熔断的路由
+apiVersion: apisix.apache.org/v2beta3
+kind: ApisixRoute
+metadata:
+  name: circuit-breaker-route
+  namespace: api-gateway
+spec:
+  http:
+  - name: route5
+    match:
+      paths:
+      - /api/critical/*
+    backends:
+    - serviceName: critical-service
+      servicePort: 80
+    plugins:
+    - name: api-breaker
+      enable: true
+      config:
+        break_response_code: 503
+        break_response_body: "Service Unavailable"
+        unhealthy:
+          http_statuses:
+            - 500
+            - 502
+            - 503
+            - 504
+          http_failures: 3
+          timeouts: 3
+          unhealthy_time: 30
+        healthy:
+          http_statuses:
+            - 200
+            - 201
+            - 204
+          successes: 2

@@ -1,0 +1,14 @@
+apiVersion: v2
+name: nacos
+description: A Helm chart for Nacos Enterprise Grade Config Center
+type: application
+version: 1.0.0
+appVersion: "2.3.1"
+keywords:
+  - nacos
+  - config
+  - discovery
+home: https://nacos.io
+maintainers:
+  - name: API Gateway Team
+    email: api-gateway@example.com
