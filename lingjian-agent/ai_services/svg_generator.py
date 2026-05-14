@@ -175,8 +175,8 @@ class SVGGenerator:
         shapes.append(circle)
 
         for i, keyword in enumerate(keywords[:3]):
-            angle = (360 / 3) * i
             import math
+            angle = (360 / 3) * i
             x = center_x + 150 * math.cos(math.radians(angle))
             y = center_y + 150 * math.sin(math.radians(angle))
 

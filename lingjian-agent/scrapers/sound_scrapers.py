@@ -79,7 +79,7 @@ class SoundBibleScraper(BaseScraper):
             from bs4 import BeautifulSoup
             soup = BeautifulSoup(response.text, 'html.parser')
 
-            for result in soup.select('.mp3")[:limit]:
+            for result in soup.select('.sound-item')[:limit]:
                 title_elem = result.select_one('.name')
                 if title_elem:
                     item = MediaItem(

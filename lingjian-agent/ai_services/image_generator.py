@@ -103,23 +103,6 @@ class ImageGenerator:
             height=512
         )
 
-    async def generate_variations(
-        self,
-        image_base64: str,
-        prompt: str,
-        count: int = 4
-    ) -> List[GenerationResult]:
-        results = []
-        for i in range(count):
-            result = await self.generate_image(
-                prompt=prompt,
-                style="photorealistic",
-                seed=-1
-            )
-            results.append(result)
-
-        return results
-
     async def upscale_image(
         self,
         image_base64: str,

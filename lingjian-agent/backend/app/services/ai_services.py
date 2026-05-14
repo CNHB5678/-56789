@@ -1,15 +1,18 @@
+import sys
+import os
+
+project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.insert(0, project_root)
+
 import logging
 from typing import List, Dict, Optional
 from fastapi import UploadFile, File, HTTPException
 import uuid
-import os
 import aiofiles
-import asyncio
 
-from ai_services.whisper import WhisperTranscriber, KeywordExtractor
-from ai_services.semantic import SemanticMatcher
-from ai_services.generator import ImageGenerator, SVGGenerator
-from ai_services.recognizer import MediaRecognizer
+from ai_services import WhisperTranscriber, KeywordExtractor
+from ai_services import SemanticMatcher
+from ai_services import ImageGenerator, SVGGenerator
 from scrapers import ScraperManager
 from video_engine import FFmpegWrapper
 
@@ -23,7 +26,7 @@ class AudioService:
 
     async def transcribe(self, file: UploadFile, project_id: Optional[str] = None) -> Dict:
         file_id = str(uuid.uuid4())
-        temp_dir = "./data/temp"
+        temp_dir = os.path.join(project_root, "data", "temp")
         os.makedirs(temp_dir, exist_ok=True)
 
         temp_path = os.path.join(temp_dir, f"{file_id}_{file.filename}")
@@ -46,10 +49,7 @@ class AudioService:
                     "startTime": seg.start_time,
                     "endTime": seg.end_time,
                     "text": seg.text,
-                    "keywords": [
-                        {"id": kw.id, "word": kw.word, "category": kw.category, "color": kw.color}
-                        for kw in keywords if kw.position["start"] <= seg.start_time * 10 <= kw.position["end"]
-                    ]
+                    "keywords": []
                 }
                 for seg in result.segments
             ]
@@ -91,8 +91,6 @@ class MediaService:
     def __init__(self):
         self.scraper_manager = ScraperManager()
         self.semantic_matcher = SemanticMatcher()
-        self.media_recognizer = MediaRecognizer()
-        self.ffmpeg = FFmpegWrapper()
 
     async def scrape_for_keywords(
         self,
@@ -116,15 +114,6 @@ class MediaService:
             }
             for r in results
         ]
-
-    async def recognize_media(self, media_id: str, file_path: str) -> Dict:
-        result = await self.media_recognizer.recognize_image(file_path)
-        return {
-            "tags": result.tags,
-            "description": result.description,
-            "objects": result.objects,
-            "confidence": result.confidence
-        }
 
 
 class AIGenerationService:
