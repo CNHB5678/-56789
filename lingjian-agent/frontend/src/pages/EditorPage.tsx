@@ -148,7 +148,7 @@ export default function EditorPage() {
         </div>
 
         {/* 右侧功能 */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-3">
           <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded overflow-hidden">
             <button
               onClick={() => setAspectRatio('16:9')}
@@ -192,7 +192,8 @@ export default function EditorPage() {
 
       {/* 时间轴 */}
       <div className="h-64 mt-3">
-        <div className="flex items-center justify-between mb-1.5 px-1">
+        <div className="flex items-center gap-2 mb-1.5 px-1">
+          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">时间轴</span>
           <div className="flex items-center gap-1.5">
             <ZoomOut className="w-3.5 h-3.5 text-gray-500" />
             <input
