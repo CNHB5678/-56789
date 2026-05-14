@@ -148,7 +148,7 @@ export default function EditorPage() {
         </div>
 
         {/* 右侧功能 */}
-        <div className="flex items-center gap-20">
+        <div className="flex items-center justify-between flex-1">
           <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded overflow-hidden">
             <button
               onClick={() => setAspectRatio('16:9')}
