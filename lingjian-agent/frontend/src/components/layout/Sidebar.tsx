@@ -1,6 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import {
-  Sparkles,
+  Home,
   Mic,
   Image,
   FolderOpen,
@@ -10,7 +10,7 @@ import {
 import { clsx } from 'clsx';
 
 const navItems = [
-  { path: '/', icon: Sparkles, label: '灵感广场' },
+  { path: '/', icon: Home, label: '首页' },
   { path: '/audio', icon: Mic, label: '音频处理' },
   { path: '/media', icon: Image, label: '素材库' },
   { path: '/my-projects', icon: FolderOpen, label: '我的项目' },

@@ -190,7 +190,7 @@ export default function InspirationSquare() {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-6">
+      <div className="flex-1 overflow-y-auto space-y-4">
         {works.map(work => (
           <div key={work.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
             <div className="p-4">
@@ -209,63 +209,67 @@ export default function InspirationSquare() {
                 </button>
               </div>
 
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{work.title}</h2>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">{work.description}</p>
-
-              <div className="flex flex-wrap gap-2 mb-4">
-                {work.tags.map(tag => (
-                  <span
-                    key={tag}
-                    className="px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-
-              <div className="relative aspect-video bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden mb-4 cursor-pointer group">
-                <img
-                  src={work.thumbnail}
-                  alt={work.title}
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center">
-                    <Play className="w-8 h-8 text-primary-500 ml-1" />
+              <div className="flex gap-4">
+                <div className="relative w-48 h-32 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden cursor-pointer group flex-shrink-0">
+                  <img
+                    src={work.thumbnail}
+                    alt={work.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center">
+                      <Play className="w-6 h-6 text-primary-500 ml-0.5" />
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between border-t pt-4">
-                <div className="flex items-center gap-6">
-                  <button
-                    onClick={() => handleLike(work.id)}
-                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors"
-                  >
-                    <Heart className="w-5 h-5" />
-                    <span>{work.likes}</span>
-                  </button>
-                  <button
-                    onClick={() => setShowComments(showComments === work.id ? null : work.id)}
-                    className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                    <span>{work.comments.length}</span>
-                  </button>
-                  <button className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
-                    <Share2 className="w-5 h-5" />
-                    <span>分享</span>
-                  </button>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-500">
-                  <Play className="w-4 h-4" />
-                  <span>{work.views}</span>
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-2">{work.title}</h2>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-3 line-clamp-2">{work.description}</p>
+
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {work.tags.map(tag => (
+                      <span
+                        key={tag}
+                        className="px-2 py-0.5 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400 rounded-full"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={() => handleLike(work.id)}
+                        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-red-500 transition-colors"
+                      >
+                        <Heart className="w-4 h-4" />
+                        <span>{work.likes}</span>
+                      </button>
+                      <button
+                        onClick={() => setShowComments(showComments === work.id ? null : work.id)}
+                        className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors"
+                      >
+                        <MessageCircle className="w-4 h-4" />
+                        <span>{work.comments.length}</span>
+                      </button>
+                      <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-400 hover:text-primary-500 transition-colors">
+                        <Share2 className="w-4 h-4" />
+                        <span>分享</span>
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                      <Play className="w-3 h-3" />
+                      <span>{work.views}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {showComments === work.id && (
                 <div className="mt-4 pt-4 border-t">
-                  <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
+                  <div className="space-y-3 mb-4 max-h-48 overflow-y-auto">
                     {work.comments.map(comment => (
                       <div key={comment.id} className="flex gap-3">
                         <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center flex-shrink-0">
@@ -286,11 +290,11 @@ export default function InspirationSquare() {
                           {comment.emojis.length > 0 && (
                             <div className="flex gap-1 mt-1">
                               {comment.emojis.map((emoji, idx) => (
-                                <span key={idx} className="text-lg">{emoji}</span>
+                                <span key={idx} className="text-base">{emoji}</span>
                               ))}
                             </div>
                           )}
-                          <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-2 mt-1">
                             <button className="text-xs text-gray-500 hover:text-primary-500">
                               回复
                             </button>
@@ -304,21 +308,21 @@ export default function InspirationSquare() {
                     ))}
                   </div>
 
-                  <div className="border-t pt-4">
-                    <div className="flex flex-wrap gap-2 mb-3">
+                  <div className="border-t pt-3">
+                    <div className="flex flex-wrap gap-1 mb-2">
                       {popularEmojis.map(emoji => (
                         <button
                           key={emoji}
                           onClick={() => toggleEmoji(emoji)}
-                          className={`text-xl p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+                          className={`text-base p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
                             selectedEmojis.includes(emoji) ? 'bg-gray-200 dark:bg-gray-600' : ''
                           }`}
                         >
                           {emoji}
                         </button>
                       ))}
-                      <button className="text-xl p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
-                        <Smile className="w-5 h-5 text-gray-500" />
+                      <button className="text-base p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors">
+                        <Smile className="w-4 h-4 text-gray-500" />
                       </button>
                     </div>
 
@@ -328,21 +332,21 @@ export default function InspirationSquare() {
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
                         placeholder="发表你的评论..."
-                        className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
+                        className="flex-1 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 rounded-lg text-sm text-gray-900 dark:text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') handleComment(work.id);
                         }}
                       />
                       <button
                         onClick={() => handleComment(work.id)}
-                        className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors"
+                        className="px-3 py-1.5 bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors"
                       >
-                        <Send className="w-5 h-5" />
+                        <Send className="w-4 h-4" />
                       </button>
                     </div>
 
                     {selectedEmojis.length > 0 && (
-                      <div className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                      <div className="mt-1 text-xs text-gray-600 dark:text-gray-400">
                         选择的表情: {selectedEmojis.join(' ')}
                       </div>
                     )}

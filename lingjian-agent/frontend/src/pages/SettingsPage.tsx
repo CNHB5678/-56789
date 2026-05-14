@@ -211,26 +211,6 @@ export default function SettingsPage() {
                 <option value="system">跟随系统</option>
               </select>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium mb-2">时间轴缩放</label>
-              <input
-                type="range"
-                min="0.5"
-                max="3"
-                step="0.1"
-                defaultValue="1"
-                className="w-full"
-              />
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">显示网格</p>
-                <p className="text-sm text-gray-500">在预览窗口显示辅助网格</p>
-              </div>
-              <input type="checkbox" className="toggle" defaultChecked />
-            </div>
           </div>
         )}
 
