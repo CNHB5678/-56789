@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { FolderOpen, Plus, Clock, Video } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { FolderOpen, Video, Plus, Clock } from 'lucide-react';
 import { useProjectStore } from '@/stores';
 import { projectApi } from '@/services';
 import CreateProjectModal from '@/components/modals/CreateProjectModal';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-export default function HomePage() {
+export default function EditorSelectPage() {
   const { projects, setProjects, setCurrentProject } = useProjectStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function HomePage() {
     }
   };
 
-  const handleProjectClick = (project: any) => {
+  const handleProjectSelect = (project: any) => {
     setCurrentProject(project);
     navigate(`/editor/${project.id}`);
   };
@@ -32,7 +32,10 @@ export default function HomePage() {
   return (
     <div className="h-full">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">我的项目</h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">选择项目</h1>
+          <p className="text-gray-500 mt-1">选择一个项目进入剪辑工作台</p>
+        </div>
         <button 
           className="btn btn-primary"
           onClick={() => setIsModalOpen(true)}
@@ -62,7 +65,7 @@ export default function HomePage() {
           {projects.map((project) => (
             <div
               key={project.id}
-              onClick={() => handleProjectClick(project)}
+              onClick={() => handleProjectSelect(project)}
               className="card cursor-pointer hover:shadow-xl transition-shadow duration-200"
             >
               <div className="aspect-video bg-gradient-to-br from-primary-400 to-secondary-400 rounded-lg mb-3 flex items-center justify-center">

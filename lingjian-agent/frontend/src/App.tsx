@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import AudioPage from './pages/AudioPage';
 import MediaPage from './pages/MediaPage';
 import EditorPage from './pages/EditorPage';
+import EditorSelectPage from './pages/EditorSelectPage';
 import SettingsPage from './pages/SettingsPage';
 
 const queryClient = new QueryClient({
@@ -26,6 +27,7 @@ function App() {
             <Route index element={<HomePage />} />
             <Route path="audio" element={<AudioPage />} />
             <Route path="media" element={<MediaPage />} />
+            <Route path="editor" element={<EditorSelectPage />} />
             <Route path="editor/:projectId" element={<EditorPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
