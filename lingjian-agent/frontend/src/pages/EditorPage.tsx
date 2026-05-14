@@ -4,9 +4,10 @@ import Timeline from '@/components/editor/Timeline/Timeline';
 import VideoPreview from '@/components/editor/Preview/VideoPreview';
 import PropertyPanel from '@/components/editor/PropertyPanel/PropertyPanel';
 import ExportPanel from '@/components/editor/ExportPanel';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Grid, Scissors, MousePointer, Move, Download, ZoomIn, ZoomOut, ChevronDown } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Grid, Scissors, MousePointer, Move, Download, ZoomIn, ZoomOut, ChevronDown, Monitor, Smartphone } from 'lucide-react';
 
 type GridType = 'horizontal' | 'vertical' | 'both';
+type AspectRatio = '16:9' | '9:16';
 
 export default function EditorPage() {
   const {
@@ -24,9 +25,11 @@ export default function EditorPage() {
     setPlayheadPosition,
     setGridSettings,
   } = useEditorStore();
+
   const [showExportPanel, setShowExportPanel] = useState(false);
   const [showGridMenu, setShowGridMenu] = useState(false);
   const [gridType, setGridType] = useState<GridType>('both');
+  const [aspectRatio, setAspectRatio] = useState<AspectRatio>('16:9');
 
   const handleGridTypeChange = (type: GridType) => {
     setGridType(type);
@@ -146,6 +149,24 @@ export default function EditorPage() {
 
         {/* 右侧功能 */}
         <div className="flex items-center gap-1.5">
+          <div className="flex items-center border border-gray-200 dark:border-gray-700 rounded overflow-hidden">
+            <button
+              onClick={() => setAspectRatio('16:9')}
+              className={`px-2 py-1.5 flex items-center gap-1 ${aspectRatio === '16:9' ? 'bg-primary-500 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+              title="16:9"
+            >
+              <Monitor className="w-3.5 h-3.5" />
+              <span className="text-xs">16:9</span>
+            </button>
+            <button
+              onClick={() => setAspectRatio('9:16')}
+              className={`px-2 py-1.5 flex items-center gap-1 ${aspectRatio === '9:16' ? 'bg-primary-500 text-white' : 'hover:bg-gray-100 dark:hover:bg-gray-700'}`}
+              title="9:16"
+            >
+              <Smartphone className="w-3.5 h-3.5" />
+              <span className="text-xs">9:16</span>
+            </button>
+          </div>
           <button
             onClick={() => setShowExportPanel(true)}
             className="px-3 py-1.5 bg-primary-500 hover:bg-primary-600 text-white rounded flex items-center gap-1.5 transition-colors text-sm"
@@ -165,14 +186,13 @@ export default function EditorPage() {
         
         {/* 预览画面 - 右侧 */}
         <div className="flex-1 flex flex-col min-w-0">
-          <VideoPreview gridType={gridType} />
+          <VideoPreview gridType={gridType} aspectRatio={aspectRatio} />
         </div>
       </div>
 
       {/* 时间轴 */}
       <div className="h-64 mt-3">
         <div className="flex items-center justify-between mb-1.5 px-1">
-          <div className="text-sm font-medium text-gray-700 dark:text-gray-300">时间轴</div>
           <div className="flex items-center gap-1.5">
             <ZoomOut className="w-3.5 h-3.5 text-gray-500" />
             <input
