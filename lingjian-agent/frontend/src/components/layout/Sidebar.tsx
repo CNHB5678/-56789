@@ -5,7 +5,6 @@ import {
   Image,
   Video,
   Settings,
-  FolderOpen,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
@@ -51,13 +50,6 @@ export default function Sidebar() {
           </NavLink>
         ))}
       </nav>
-
-      <div className="p-4 border-t border-gray-200 dark:border-gray-700">
-        <button className="w-full btn btn-ghost justify-start gap-3 text-gray-600 dark:text-gray-400">
-          <FolderOpen className="w-5 h-5" />
-          <span>打开项目</span>
-        </button>
-      </div>
     </aside>
   );
 }

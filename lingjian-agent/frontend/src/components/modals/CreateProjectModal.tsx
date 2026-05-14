@@ -37,10 +37,17 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
       setDescription('');
       navigate(`/editor/${project.id}`);
     } catch (error) {
-      toast.error('创建项目失败');
+      console.error('创建项目失败:', error);
+      toast.error('创建项目失败，请检查网络连接');
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleClose = () => {
+    setName('');
+    setDescription('');
+    onClose();
   };
 
   return (
@@ -51,7 +58,7 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
             新建项目
           </h2>
           <button
-            onClick={onClose}
+            onClick={handleClose}
             className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             <X className="w-5 h-5 text-gray-500" />
@@ -89,7 +96,7 @@ export default function CreateProjectModal({ isOpen, onClose }: CreateProjectMod
           <div className="flex gap-3 pt-4">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               取消

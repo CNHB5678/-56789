@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Bell, User, Menu } from 'lucide-react';
+import { Search, Menu } from 'lucide-react';
 import { useProjectStore } from '@/stores/projectStore';
 
 export default function Header() {
@@ -34,17 +34,6 @@ export default function Header() {
             </span>
           </div>
         )}
-
-        <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg relative">
-          <Bell className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-        </button>
-
-        <button className="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-secondary-400 rounded-full flex items-center justify-center">
-            <User className="w-4 h-4 text-white" />
-          </div>
-        </button>
       </div>
     </header>
   );

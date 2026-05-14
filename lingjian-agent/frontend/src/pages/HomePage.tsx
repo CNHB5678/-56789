@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { FolderOpen, Plus, Clock, Video } from 'lucide-react';
 import { useProjectStore } from '@/stores';
 import { projectApi } from '@/services';
@@ -9,20 +9,26 @@ import toast from 'react-hot-toast';
 export default function HomePage() {
   const { projects, setProjects, setCurrentProject } = useProjectStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const isLoadingRef = useRef(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    loadProjects();
-  }, []);
+    const loadProjects = async () => {
+      if (isLoadingRef.current) return;
+      isLoadingRef.current = true;
+      try {
+        const fetchedProjects = await projectApi.getProjects();
+        setProjects(fetchedProjects);
+      } catch (error) {
+        console.error('加载项目失败:', error);
+        // 不显示错误提示，避免打扰用户
+      } finally {
+        isLoadingRef.current = false;
+      }
+    };
 
-  const loadProjects = async () => {
-    try {
-      const fetchedProjects = await projectApi.getProjects();
-      setProjects(fetchedProjects);
-    } catch (error) {
-      toast.error('加载项目失败');
-    }
-  };
+    loadProjects();
+  }, [setProjects]);
 
   const handleProjectClick = (project: any) => {
     setCurrentProject(project);
