@@ -106,7 +106,7 @@ export default function Timeline({ timelineScale, setTimelineScale }: TimelinePr
 
       <div className="flex flex-1 overflow-hidden">
         {/* Track labels */}
-        <div className="w-32 flex-shrink-0 border-r bg-gray-50 dark:bg-gray-900">
+        <div className="w-32 flex-shrink-0 border-r bg-gray-50 dark:bg-gray-900 overflow-y-auto">
           <div className="h-8" />
           {tracks.map((track, index) => (
             <div
