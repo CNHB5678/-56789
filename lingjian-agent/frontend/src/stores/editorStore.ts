@@ -51,6 +51,15 @@ const defaultGridSettings: GridSettings = {
 
 const defaultTracks: Track[] = [
   {
+    id: 'track-3',
+    name: '字幕',
+    type: 'subtitle',
+    clips: [],
+    muted: false,
+    locked: false,
+    visible: true,
+  },
+  {
     id: 'track-1',
     name: '主轨',
     type: 'video',
@@ -63,15 +72,6 @@ const defaultTracks: Track[] = [
     id: 'track-2',
     name: '音频',
     type: 'audio',
-    clips: [],
-    muted: false,
-    locked: false,
-    visible: true,
-  },
-  {
-    id: 'track-3',
-    name: '字幕',
-    type: 'subtitle',
     clips: [],
     muted: false,
     locked: false,
