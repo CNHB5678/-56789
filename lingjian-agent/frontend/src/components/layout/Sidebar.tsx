@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom';
 import {
   Sparkles,
-  FolderOpen,
   Mic,
   Image,
+  FolderOpen,
   Video,
   Settings,
 } from 'lucide-react';
@@ -11,9 +11,9 @@ import { clsx } from 'clsx';
 
 const navItems = [
   { path: '/', icon: Sparkles, label: '灵感广场' },
-  { path: '/my-projects', icon: FolderOpen, label: '我的项目' },
   { path: '/audio', icon: Mic, label: '音频处理' },
   { path: '/media', icon: Image, label: '素材库' },
+  { path: '/my-projects', icon: FolderOpen, label: '我的项目' },
   { path: '/editor', icon: Video, label: '剪辑工作台' },
   { path: '/settings', icon: Settings, label: '设置' },
 ];

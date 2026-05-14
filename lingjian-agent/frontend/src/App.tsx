@@ -7,7 +7,6 @@ import MyProjects from './pages/MyProjects';
 import AudioPage from './pages/AudioPage';
 import MediaPage from './pages/MediaPage';
 import EditorPage from './pages/EditorPage';
-import EditorSelectPage from './pages/EditorSelectPage';
 import SettingsPage from './pages/SettingsPage';
 
 const queryClient = new QueryClient({
@@ -29,7 +28,7 @@ function App() {
             <Route path="my-projects" element={<MyProjects />} />
             <Route path="audio" element={<AudioPage />} />
             <Route path="media" element={<MediaPage />} />
-            <Route path="editor" element={<EditorSelectPage />} />
+            <Route path="editor" element={<EditorPage />} />
             <Route path="editor/:projectId" element={<EditorPage />} />
             <Route path="settings" element={<SettingsPage />} />
           </Route>
