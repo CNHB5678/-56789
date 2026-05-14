@@ -49,8 +49,38 @@ const defaultGridSettings: GridSettings = {
   dotSize: 4,
 };
 
+const defaultTracks: Track[] = [
+  {
+    id: 'track-1',
+    name: '主轨',
+    type: 'video',
+    clips: [],
+    muted: false,
+    locked: false,
+    visible: true,
+  },
+  {
+    id: 'track-2',
+    name: '音频',
+    type: 'audio',
+    clips: [],
+    muted: false,
+    locked: false,
+    visible: true,
+  },
+  {
+    id: 'track-3',
+    name: '字幕',
+    type: 'subtitle',
+    clips: [],
+    muted: false,
+    locked: false,
+    visible: true,
+  },
+];
+
 export const useEditorStore = create<EditorState>((set) => ({
-  tracks: [],
+  tracks: defaultTracks,
   playheadPosition: 0,
   selectedClipId: null,
   selectedTrackId: null,
