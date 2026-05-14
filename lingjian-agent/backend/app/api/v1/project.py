@@ -34,6 +34,7 @@ async def create_project(
         }
     }
     projects[project_id] = project
+    logger.info(f"Created project: {name} ({project_id})")
     return project
 
 
@@ -67,4 +68,5 @@ async def delete_project(project_id: str):
     if project_id not in projects:
         raise HTTPException(status_code=404, detail="Project not found")
     del projects[project_id]
+    logger.info(f"Deleted project: {project_id}")
     return {"success": True}

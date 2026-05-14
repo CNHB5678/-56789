@@ -1,10 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from typing import List, Optional
 import logging
-import uuid
+import base64
+import os
+
+from app.services.ai_services import AIGenerationService, MediaService
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+ai_service = AIGenerationService()
+media_service = MediaService()
 
 
 @router.post("/match")
@@ -13,8 +19,19 @@ async def match_media(
     media_type: str = "image",
     threshold: float = 0.6
 ):
-    logger.info(f"Matching media for keywords: {keywords}, type: {media_type}, threshold: {threshold}")
-    return []
+    try:
+        from .media import media_library
+        candidates = list(media_library.values())
+
+        results = await media_service.match_media(
+            keywords=keywords,
+            candidate_media=candidates,
+            threshold=threshold
+        )
+        return results
+    except Exception as e:
+        logger.error(f"Match failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/generate/svg")
@@ -23,31 +40,17 @@ async def generate_svg(
     animation_type: str = "fade",
     duration: float = 1.0
 ):
-    logger.info(f"Generating SVG for: {keywords}")
-
-    svg_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
-  <defs>
-    <style>
-      @keyframes fadeIn {{
-        from {{ opacity: 0; }}
-        to {{ opacity: 1; }}
-      }}
-      .animate-fade {{
-        animation: fadeIn {duration}s ease-out forwards;
-      }}
-    </style>
-  </defs>
-  <rect width="800" height="600" fill="#f8f9fa"/>
-  <g class="animate-fade">
-    <circle cx="400" cy="300" r="100" fill="#4ECDC4"/>
-    <text x="400" y="310" text-anchor="middle" fill="white" font-size="24">
-      {', '.join(keywords[:3])}
-    </text>
-  </g>
-</svg>"""
-
-    return {"svgContent": svg_content}
+    try:
+        logger.info(f"Generating SVG for: {keywords}")
+        result = await ai_service.generate_svg(
+            keywords=keywords,
+            animation_type=animation_type,
+            duration=duration
+        )
+        return result
+    except Exception as e:
+        logger.error(f"SVG generation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/generate/image")
@@ -58,41 +61,64 @@ async def generate_image(
     height: int = 512,
     style: str = "photorealistic"
 ):
-    logger.info(f"Generating image: prompt={prompt}, style={style}")
-
-    style_prompts = {
-        "photorealistic": "photorealistic, 8k, highly detailed",
-        "anime": "anime style, vibrant colors, cel shading",
-        "illustration": "digital illustration, artstation",
-        "oil_painting": "oil painting style, classical art",
-        "sketch": "pencil sketch, hand drawn",
-        "3d": "3D render, octane render, hyperrealistic",
-        "ancient": "ancient Chinese style, traditional",
-        "chinese": "Chinese ink painting, shuimo style",
-        "sci-fi": "sci-fi style, cyberpunk, futuristic"
-    }
-
-    full_prompt = f"{prompt}, {style_prompts.get(style, '')}"
-
-    logger.info(f"Full prompt: {full_prompt}")
-
-    return {
-        "imageBase64": "",
-        "seed": None
-    }
+    try:
+        logger.info(f"Generating image: prompt={prompt}, style={style}")
+        result = await ai_service.generate_image(
+            prompt=prompt,
+            style=style,
+            width=width,
+            height=height,
+            negative_prompt=negative_prompt
+        )
+        return result
+    except Exception as e:
+        logger.error(f"Image generation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/recognize")
 async def recognize_media(media_id: str):
-    logger.info(f"Recognizing media: {media_id}")
-    return {
-        "tags": [],
-        "description": "",
-        "objects": []
-    }
+    try:
+        from .media import media_library
+
+        if media_id not in media_library:
+            raise HTTPException(status_code=404, detail="Media not found")
+
+        media = media_library[media_id]
+        result = await media_service.recognize_media(media_id, media["filePath"])
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Recognition failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post("/scrape-missing")
 async def scrape_missing_assets(keywords: List[str]):
-    logger.info(f"Scraping missing assets for: {keywords}")
-    return {"success": True}
+    try:
+        from scrapers import ScraperManager
+
+        manager = ScraperManager()
+        result = await manager.scrape_for_keywords(keywords, "image")
+        return {"success": True, "result": result}
+    except Exception as e:
+        logger.error(f"Scraping missing assets failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/styles")
+async def get_image_styles():
+    return {
+        "styles": [
+            {"id": "photorealistic", "name": "写实", "description": "逼真的摄影风格"},
+            {"id": "anime", "name": "动漫", "description": "动漫风格"},
+            {"id": "illustration", "name": "插画", "description": "数字插画"},
+            {"id": "oil_painting", "name": "油画", "description": "油画风格"},
+            {"id": "sketch", "name": "素描", "description": "素描风格"},
+            {"id": "3d", "name": "3D", "description": "3D渲染风格"},
+            {"id": "ancient", "name": "古风", "description": "古风风格"},
+            {"id": "chinese", "name": "国风", "description": "国风水墨"},
+            {"id": "sci-fi", "name": "科幻", "description": "科幻风格"}
+        ]
+    }

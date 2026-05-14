@@ -1,1 +1,3 @@
-# 语义匹配模块
+from .matcher import SemanticMatcher, MatchResult
+
+__all__ = ['SemanticMatcher', 'MatchResult']
