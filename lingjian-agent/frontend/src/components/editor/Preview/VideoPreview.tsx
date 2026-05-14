@@ -36,7 +36,7 @@ export default function VideoPreview({ gridType }: VideoPreviewProps) {
 
     if (width === 0 || height === 0) return lines;
 
-    if (gridType === 'horizontal' || gridType === 'both') {
+    if (gridType === 'horizontal') {
       lines.push(
         <line
           key="h-center"
@@ -51,7 +51,7 @@ export default function VideoPreview({ gridType }: VideoPreviewProps) {
       );
     }
     
-    if (gridType === 'vertical' || gridType === 'both') {
+    if (gridType === 'vertical') {
       lines.push(
         <line
           key="v-center"
@@ -64,6 +64,38 @@ export default function VideoPreview({ gridType }: VideoPreviewProps) {
           opacity="1"
         />
       );
+    }
+
+    if (gridType === 'both') {
+      const gridSpacing = 60;
+      for (let y = gridSpacing; y < height; y += gridSpacing) {
+        lines.push(
+          <line
+            key={`h-${y}`}
+            x1="0"
+            y1={y}
+            x2={width}
+            y2={y}
+            stroke="white"
+            strokeWidth="1.5"
+            opacity="1"
+          />
+        );
+      }
+      for (let x = gridSpacing; x < width; x += gridSpacing) {
+        lines.push(
+          <line
+            key={`v-${x}`}
+            x1={x}
+            y1="0"
+            x2={x}
+            y2={height}
+            stroke="white"
+            strokeWidth="1.5"
+            opacity="1"
+          />
+        );
+      }
     }
     
     return lines;

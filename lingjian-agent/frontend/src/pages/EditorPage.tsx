@@ -73,34 +73,34 @@ export default function EditorPage() {
             
             {showGridMenu && (
           <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 p-2 z-50">
-            <div className="flex flex-wrap gap-1">
+            <div className="flex items-center gap-1">
               <button
                 onClick={() => {
                   toggleGrid();
                   setShowGridMenu(false);
                 }}
-                className="px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap"
+                className="px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap text-center"
               >
                 {showGrid ? '隐藏网格' : '显示网格'}
               </button>
               <div className="w-px bg-gray-200 dark:bg-gray-700 mx-1" />
               <button
                 onClick={() => handleGridTypeChange('horizontal')}
-                className={`px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap ${gridType === 'horizontal' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
+                className={`px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap text-center ${gridType === 'horizontal' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
               >
                 横线
               </button>
               <button
                 onClick={() => handleGridTypeChange('vertical')}
-                className={`px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap ${gridType === 'vertical' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
+                className={`px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap text-center ${gridType === 'vertical' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
               >
                 竖线
               </button>
               <button
                 onClick={() => handleGridTypeChange('both')}
-                className={`px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap ${gridType === 'both' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
+                className={`px-3 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-gray-700 rounded whitespace-nowrap text-center ${gridType === 'both' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
               >
-                横线+竖线
+                网格线
               </button>
             </div>
           </div>
