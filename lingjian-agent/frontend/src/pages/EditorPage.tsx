@@ -192,24 +192,7 @@ export default function EditorPage() {
 
       {/* 时间轴 */}
       <div className="h-64 mt-3">
-        <div className="flex items-center gap-2 mb-1.5 px-1">
-          <span className="text-sm font-medium text-gray-700 dark:text-gray-300">时间轴</span>
-          <div className="flex items-center gap-1.5">
-            <ZoomOut className="w-3.5 h-3.5 text-gray-500" />
-            <input
-              type="range"
-              min="0.5"
-              max="3"
-              step="0.1"
-              value={timelineScale}
-              onChange={(e) => setTimelineScale(parseFloat(e.target.value))}
-              className="w-20"
-            />
-            <ZoomIn className="w-3.5 h-3.5 text-gray-500" />
-            <span className="text-xs text-gray-500 w-10 text-center">{timelineScale.toFixed(1)}x</span>
-          </div>
-        </div>
-        <Timeline />
+        <Timeline timelineScale={timelineScale} setTimelineScale={setTimelineScale} />
       </div>
 
       <ExportPanel 

@@ -1,7 +1,13 @@
 import { useRef, useEffect } from 'react';
 import { useEditorStore } from '@/stores';
+import { ZoomIn, ZoomOut } from 'lucide-react';
 
-export default function Timeline() {
+interface TimelineProps {
+  timelineScale: number;
+  setTimelineScale: (scale: number) => void;
+}
+
+export default function Timeline({ timelineScale, setTimelineScale }: TimelineProps) {
   const {
     tracks,
     playheadPosition,
@@ -30,7 +36,23 @@ export default function Timeline() {
   return (
     <div className="h-full bg-white dark:bg-gray-800 rounded-lg flex flex-col">
       <div className="flex items-center justify-between px-4 py-2 border-b">
-        <h3 className="font-medium">时间轴</h3>
+        <div className="flex items-center gap-2">
+          <h3 className="font-medium">时间轴</h3>
+          <div className="flex items-center gap-1.5">
+            <ZoomOut className="w-3.5 h-3.5 text-gray-500" />
+            <input
+              type="range"
+              min="0.5"
+              max="3"
+              step="0.1"
+              value={timelineScale}
+              onChange={(e) => setTimelineScale(parseFloat(e.target.value))}
+              className="w-20"
+            />
+            <ZoomIn className="w-3.5 h-3.5 text-gray-500" />
+            <span className="text-xs text-gray-500 w-10 text-center">{timelineScale.toFixed(1)}x</span>
+          </div>
+        </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-gray-500">
             {Math.floor(playheadPosition / 60)}:{String(Math.floor(playheadPosition % 60)).padStart(2, '0')}
