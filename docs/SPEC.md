@@ -911,11 +911,24 @@ class ImageGenerator:
         """通过Stable Diffusion生成图片"""
 
         style_prompts = {
-            "photorealistic": "photorealistic, 8k, highly detailed",
-            "anime": "anime style, vibrant colors",
-            "illustration": "digital illustration, artstation",
-            "oil_painting": "oil painting style, classical",
-            "sketch": "pencil sketch, hand drawn"
+            # 写实风格
+            "photorealistic": "photorealistic, 8k, highly detailed, professional photography",
+            # 动漫风格
+            "anime": "anime style, vibrant colors, cel shading, manga art",
+            # 插画风格
+            "illustration": "digital illustration, artstation, detailed artwork",
+            # 油画风格
+            "oil_painting": "oil painting style, classical art, brush strokes",
+            # 素描风格
+            "sketch": "pencil sketch, hand drawn, graphite drawing",
+            # 3D风格
+            "3d": "3D render, octane render, cinema 4D, hyperrealistic, volumetric lighting",
+            # 古风
+            "ancient": "ancient Chinese style, traditional hanfu, historical costume, Tang dynasty aesthetics",
+            # 国风
+            "chinese": "Chinese ink painting, shuimo style, traditional Chinese art, watercolor, gongbi",
+            # 科幻风格
+            "sci-fi": "sci-fi style, cyberpunk, futuristic, neon lights, holographic, space art"
         }
 
         payload = {
