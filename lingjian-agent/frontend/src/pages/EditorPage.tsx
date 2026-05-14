@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useEditorStore, useProjectStore } from '@/stores';
+import { useEditorStore } from '@/stores';
 import Timeline from '@/components/editor/Timeline/Timeline';
 import VideoPreview from '@/components/editor/Preview/VideoPreview';
 import PropertyPanel from '@/components/editor/PropertyPanel/PropertyPanel';
@@ -10,7 +10,6 @@ type GridType = 'horizontal' | 'vertical' | 'both';
 
 export default function EditorPage() {
   const {
-    tracks,
     playheadPosition,
     isPlaying,
     volume,
@@ -22,11 +21,9 @@ export default function EditorPage() {
     setActiveTool,
     timelineScale,
     setTimelineScale,
-    gridSettings,
+    setPlayheadPosition,
     setGridSettings,
   } = useEditorStore();
-
-  const { currentProject } = useProjectStore();
   const [showExportPanel, setShowExportPanel] = useState(false);
   const [showGridMenu, setShowGridMenu] = useState(false);
   const [gridType, setGridType] = useState<GridType>('both');
