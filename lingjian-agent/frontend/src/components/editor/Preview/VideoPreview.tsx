@@ -1,25 +1,58 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useMemo } from 'react';
 import { useEditorStore } from '@/stores';
-import GridOverlay from './GridOverlay';
 
-export default function VideoPreview() {
+type GridType = 'horizontal' | 'vertical' | 'both';
+
+interface VideoPreviewProps {
+  gridType: GridType;
+}
+
+export default function VideoPreview({ gridType }: VideoPreviewProps) {
   const { showGrid } = useEditorStore();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const updateGrid = () => {
-      if (containerRef.current && showGrid) {
-        const height = containerRef.current.offsetHeight;
-        const stripeCount = Math.floor(height / 60);
-        const stripeHeight = height / stripeCount;
-        return stripeHeight;
-      }
-      return 60;
-    };
+  const gridSpacing = 60;
 
-    updateGrid();
-  }, [showGrid]);
+  const gridLines = useMemo(() => {
+    const lines: JSX.Element[] = [];
+    
+    if (gridType === 'horizontal' || gridType === 'both') {
+      for (let y = gridSpacing; y < 1080; y += gridSpacing) {
+        lines.push(
+          <line
+            key={`h-${y}`}
+            x1="0"
+            y1={y}
+            x2="1920"
+            y2={y}
+            stroke="white"
+            strokeWidth="1.5"
+            opacity="1"
+          />
+        );
+      }
+    }
+    
+    if (gridType === 'vertical' || gridType === 'both') {
+      for (let x = gridSpacing; x < 1920; x += gridSpacing) {
+        lines.push(
+          <line
+            key={`v-${x}`}
+            x1={x}
+            y1="0"
+            x2={x}
+            y2="1080"
+            stroke="white"
+            strokeWidth="1.5"
+            opacity="1"
+          />
+        );
+      }
+    }
+    
+    return lines;
+  }, [gridType]);
 
   return (
     <div ref={containerRef} className="h-full bg-black rounded-lg overflow-hidden relative">
@@ -41,18 +74,12 @@ export default function VideoPreview() {
 
       {showGrid && (
         <div className="absolute inset-0 pointer-events-none">
-          <svg className="w-full h-full" preserveAspectRatio="none">
-            <defs>
-              <pattern
-                id="white-stripes-adaptive"
-                width="100%"
-                height="60"
-                patternUnits="userSpaceOnUse"
-              >
-                <line x1="0" y1="30" x2="100%" y2="30" stroke="white" strokeWidth="1" opacity="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#white-stripes-adaptive)" />
+          <svg 
+            className="w-full h-full" 
+            viewBox="0 0 1920 1080"
+            preserveAspectRatio="xMidYMid meet"
+          >
+            {gridLines}
           </svg>
         </div>
       )}

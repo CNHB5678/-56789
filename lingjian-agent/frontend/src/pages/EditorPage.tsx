@@ -4,7 +4,9 @@ import Timeline from '@/components/editor/Timeline/Timeline';
 import VideoPreview from '@/components/editor/Preview/VideoPreview';
 import PropertyPanel from '@/components/editor/PropertyPanel/PropertyPanel';
 import ExportPanel from '@/components/editor/ExportPanel';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Grid, Scissors, MousePointer, Move, Download, ZoomIn, ZoomOut } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Grid, Scissors, MousePointer, Move, Download, ZoomIn, ZoomOut, ChevronDown } from 'lucide-react';
+
+type GridType = 'horizontal' | 'vertical' | 'both';
 
 export default function EditorPage() {
   const {
@@ -20,63 +22,113 @@ export default function EditorPage() {
     setActiveTool,
     timelineScale,
     setTimelineScale,
+    gridSettings,
+    setGridSettings,
   } = useEditorStore();
 
   const { currentProject } = useProjectStore();
   const [showExportPanel, setShowExportPanel] = useState(false);
+  const [showGridMenu, setShowGridMenu] = useState(false);
+  const [gridType, setGridType] = useState<GridType>('both');
+
+  const handleGridTypeChange = (type: GridType) => {
+    setGridType(type);
+    setGridSettings({ 
+      type: type === 'horizontal' ? 'lines' : type === 'vertical' ? 'lines' : 'lines' 
+    });
+    setShowGridMenu(false);
+  };
 
   return (
     <div className="h-full flex flex-col">
-      {/* 工具栏 */}
-      <div className="flex items-center justify-between mb-4 p-3 bg-white dark:bg-gray-800 rounded-lg gap-4">
+      {/* 工具栏 - 更矮 */}
+      <div className="flex items-center justify-between mb-3 px-2 py-1.5 bg-white dark:bg-gray-800 rounded-lg gap-2">
         {/* 左侧工具 */}
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5">
           <button
             onClick={() => setActiveTool('select')}
-            className={`p-2 rounded-lg transition-colors ${activeTool === 'select' ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
+            className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
           >
-            <MousePointer className="w-5 h-5" />
+            <MousePointer className="w-4 h-4" />
           </button>
           <button
             onClick={() => setActiveTool('cut')}
-            className={`p-2 rounded-lg transition-colors ${activeTool === 'cut' ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
+            className={`p-1.5 rounded transition-colors ${activeTool === 'cut' ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
           >
-            <Scissors className="w-5 h-5" />
+            <Scissors className="w-4 h-4" />
           </button>
           <button
             onClick={() => setActiveTool('move')}
-            className={`p-2 rounded-lg transition-colors ${activeTool === 'move' ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
+            className={`p-1.5 rounded transition-colors ${activeTool === 'move' ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
           >
-            <Move className="w-5 h-5" />
+            <Move className="w-4 h-4" />
           </button>
-          <button
-            onClick={toggleGrid}
-            className={`p-2 rounded-lg transition-colors ${showGrid ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
-          >
-            <Grid className="w-5 h-5" />
-          </button>
+          
+          {/* 网格按钮带下拉菜单 */}
+          <div className="relative">
+            <button
+              onClick={() => setShowGridMenu(!showGridMenu)}
+              className={`p-1.5 rounded transition-colors flex items-center gap-1 ${showGrid ? 'bg-primary-100 text-primary-600' : 'hover:bg-gray-100'}`}
+            >
+              <Grid className="w-4 h-4" />
+              <ChevronDown className="w-3 h-3" />
+            </button>
+            
+            {showGridMenu && (
+              <div className="absolute top-full left-0 mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                <button
+                  onClick={() => {
+                    toggleGrid();
+                    setShowGridMenu(false);
+                  }}
+                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  {showGrid ? '隐藏网格' : '显示网格'}
+                </button>
+                <div className="border-t border-gray-200 dark:border-gray-700 my-1" />
+                <button
+                  onClick={() => handleGridTypeChange('horizontal')}
+                  className={`w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${gridType === 'horizontal' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
+                >
+                  横线
+                </button>
+                <button
+                  onClick={() => handleGridTypeChange('vertical')}
+                  className={`w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${gridType === 'vertical' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
+                >
+                  竖线
+                </button>
+                <button
+                  onClick={() => handleGridTypeChange('both')}
+                  className={`w-full px-3 py-1.5 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 ${gridType === 'both' ? 'bg-primary-50 dark:bg-primary-900/30 text-primary-600' : ''}`}
+                >
+                  横线+竖线
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* 中间播放控制 */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setPlayheadPosition(0)}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-gray-100 rounded transition-colors"
           >
-            <SkipBack className="w-5 h-5" />
+            <SkipBack className="w-4 h-4" />
           </button>
           <button
             onClick={() => setIsPlaying(!isPlaying)}
-            className="p-3 bg-primary-500 hover:bg-primary-600 text-white rounded-full transition-colors"
+            className="p-2 bg-primary-500 hover:bg-primary-600 text-white rounded-full transition-colors"
           >
-            {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           </button>
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <SkipForward className="w-5 h-5" />
+          <button className="p-1.5 hover:bg-gray-100 rounded transition-colors">
+            <SkipForward className="w-4 h-4" />
           </button>
 
-          <div className="flex items-center gap-2 px-3">
-            <Volume2 className="w-4 h-4 text-gray-500" />
+          <div className="flex items-center gap-1.5 px-2">
+            <Volume2 className="w-3.5 h-3.5 text-gray-500" />
             <input
               type="range"
               min="0"
@@ -84,22 +136,22 @@ export default function EditorPage() {
               step="0.01"
               value={volume}
               onChange={(e) => setVolume(parseFloat(e.target.value))}
-              className="w-20"
+              className="w-16"
             />
           </div>
 
-          <div className="text-sm text-gray-500 font-mono">
+          <div className="text-xs text-gray-500 font-mono w-10 text-center">
             {Math.floor(playheadPosition / 60)}:{String(Math.floor(playheadPosition % 60)).padStart(2, '0')}
           </div>
         </div>
 
         {/* 右侧功能 */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           <button
             onClick={() => setShowExportPanel(true)}
-            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg flex items-center gap-2 transition-colors"
+            className="px-3 py-1.5 bg-primary-500 hover:bg-primary-600 text-white rounded flex items-center gap-1.5 transition-colors text-sm"
           >
-            <Download className="w-5 h-5" />
+            <Download className="w-4 h-4" />
             导出
           </button>
         </div>
@@ -114,16 +166,16 @@ export default function EditorPage() {
         
         {/* 预览画面 - 右侧 */}
         <div className="flex-1 flex flex-col min-w-0">
-          <VideoPreview />
+          <VideoPreview gridType={gridType} />
         </div>
       </div>
 
       {/* 时间轴 */}
-      <div className="h-64 mt-4">
-        <div className="flex items-center justify-between mb-2 px-1">
+      <div className="h-64 mt-3">
+        <div className="flex items-center justify-between mb-1.5 px-1">
           <div className="text-sm font-medium text-gray-700 dark:text-gray-300">时间轴</div>
-          <div className="flex items-center gap-2">
-            <ZoomOut className="w-4 h-4 text-gray-500" />
+          <div className="flex items-center gap-1.5">
+            <ZoomOut className="w-3.5 h-3.5 text-gray-500" />
             <input
               type="range"
               min="0.5"
@@ -131,10 +183,10 @@ export default function EditorPage() {
               step="0.1"
               value={timelineScale}
               onChange={(e) => setTimelineScale(parseFloat(e.target.value))}
-              className="w-24"
+              className="w-20"
             />
-            <ZoomIn className="w-4 h-4 text-gray-500" />
-            <span className="text-xs text-gray-500 w-12">{timelineScale.toFixed(1)}x</span>
+            <ZoomIn className="w-3.5 h-3.5 text-gray-500" />
+            <span className="text-xs text-gray-500 w-10 text-center">{timelineScale.toFixed(1)}x</span>
           </div>
         </div>
         <Timeline />
