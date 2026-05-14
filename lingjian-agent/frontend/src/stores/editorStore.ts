@@ -15,6 +15,7 @@ interface EditorState {
   showGrid: boolean;
   gridSettings: GridSettings;
   zoom: number;
+  timelineScale: number;
 
   setTracks: (tracks: Track[]) => void;
   addTrack: (track: Track) => void;
@@ -36,6 +37,7 @@ interface EditorState {
   toggleGrid: () => void;
   setGridSettings: (settings: Partial<GridSettings>) => void;
   setZoom: (zoom: number) => void;
+  setTimelineScale: (scale: number) => void;
 }
 
 const defaultGridSettings: GridSettings = {
@@ -59,6 +61,7 @@ export const useEditorStore = create<EditorState>((set) => ({
   showGrid: false,
   gridSettings: defaultGridSettings,
   zoom: 1,
+  timelineScale: 1,
 
   setTracks: (tracks) => set({ tracks }),
 
@@ -142,4 +145,5 @@ export const useEditorStore = create<EditorState>((set) => ({
       gridSettings: { ...state.gridSettings, ...settings },
     })),
   setZoom: (zoom) => set({ zoom }),
+  setTimelineScale: (timelineScale) => set({ timelineScale }),
 }));

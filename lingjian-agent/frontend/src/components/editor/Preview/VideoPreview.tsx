@@ -3,11 +3,26 @@ import { useEditorStore } from '@/stores';
 import GridOverlay from './GridOverlay';
 
 export default function VideoPreview() {
-  const { showGrid, gridSettings } = useEditorStore();
+  const { showGrid } = useEditorStore();
   const videoRef = useRef<HTMLVideoElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateGrid = () => {
+      if (containerRef.current && showGrid) {
+        const height = containerRef.current.offsetHeight;
+        const stripeCount = Math.floor(height / 60);
+        const stripeHeight = height / stripeCount;
+        return stripeHeight;
+      }
+      return 60;
+    };
+
+    updateGrid();
+  }, [showGrid]);
 
   return (
-    <div className="h-full bg-black rounded-lg overflow-hidden relative">
+    <div ref={containerRef} className="h-full bg-black rounded-lg overflow-hidden relative">
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="text-gray-500 text-center">
           <svg className="w-16 h-16 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -24,7 +39,23 @@ export default function VideoPreview() {
         controls
       />
 
-      {showGrid && <GridOverlay settings={gridSettings} />}
+      {showGrid && (
+        <div className="absolute inset-0 pointer-events-none">
+          <svg className="w-full h-full" preserveAspectRatio="none">
+            <defs>
+              <pattern
+                id="white-stripes-adaptive"
+                width="100%"
+                height="60"
+                patternUnits="userSpaceOnUse"
+              >
+                <line x1="0" y1="30" x2="100%" y2="30" stroke="white" strokeWidth="1" opacity="0.5" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#white-stripes-adaptive)" />
+          </svg>
+        </div>
+      )}
 
       <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/50 to-transparent">
         <div className="flex items-center gap-2 text-white text-xs">
