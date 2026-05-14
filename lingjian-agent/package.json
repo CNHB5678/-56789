@@ -1,0 +1,41 @@
+{
+  "name": "lingjian-agent",
+  "version": "1.0.0",
+  "description": "灵剪Agent - 智能视频创作助手",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "web"
+  ],
+  "scripts": {
+    "dev": "npm run dev:frontend",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:web": "cd web && npm run dev",
+    "build": "npm run build:frontend && npm run build:web",
+    "build:frontend": "cd frontend && npm run build",
+    "build:web": "cd web && npm run build",
+    "tauri": "cd frontend && npm run tauri",
+    "tauri:dev": "cd frontend && npm run tauri dev",
+    "tauri:build": "cd frontend && npm run tauri build",
+    "setup": "chmod +x scripts/*.sh && npm run install:all",
+    "install:all": "cd frontend && npm install && cd ../backend && pip install -r requirements.txt"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "video-editor",
+    "ai",
+    "whisper",
+    "stable-diffusion",
+    "tauri",
+    "react"
+  ],
+  "author": "灵剪Agent",
+  "license": "MIT"
+}

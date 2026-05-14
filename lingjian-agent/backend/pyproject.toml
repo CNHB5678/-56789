@@ -1,0 +1,97 @@
+[project]
+name = "lingjian-agent"
+version = "1.0.0"
+description = "灵剪Agent 后端服务"
+authors = ["灵剪Agent"]
+readme = "README.md"
+requires-python = ">=3.10"
+
+dependencies = [
+    # Web框架
+    "fastapi==0.109.0",
+    "uvicorn[standard]==0.27.0",
+    "starlette==0.36.0",
+
+    # 数据验证
+    "pydantic==2.5.0",
+    "pydantic-settings==2.1.0",
+
+    # 数据库
+    "sqlalchemy==2.0.25",
+    "aiosqlite==0.19.0",
+    "alembic==1.13.1",
+
+    # 向量数据库
+    "chromadb==0.4.22",
+
+    # HTTP客户端
+    "httpx==0.26.0",
+    "aiofiles==23.2.1",
+
+    # 文件处理
+    "python-multipart==0.0.6",
+    "python-magic==0.4.27",
+
+    # AI服务
+    "torch==2.2.0",
+    "transformers==4.37.0",
+    "sentence-transformers==2.3.1",
+    "faster-whisper==1.0.3",
+    "Pillow==10.2.0",
+    "accelerate==0.26.0",
+    "safetensors==0.4.1",
+
+    # 爬虫
+    "beautifulsoup4==4.12.3",
+    "selenium==4.17.0",
+    "playwright==1.40.0",
+
+    # 视频处理
+    "ffmpeg-python==0.2.0",
+    "opencv-python==4.9.0.80",
+
+    # SVG生成
+    "drawsvg==2.4.0",
+    "svgwrite==1.4.3",
+
+    # 工具库
+    "python-dotenv==1.0.0",
+    "loguru==0.7.2",
+    "tenacity==8.2.3",
+    "orjson==3.9.12",
+
+    # WebSocket
+    "websockets==12.0",
+
+    # CORS
+    "fastapi-cors==0.0.4"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==7.4.4",
+    "pytest-asyncio==0.23.3",
+    "pytest-cov==4.1.0",
+    "black==24.1.0",
+    "ruff==0.1.14",
+    "mypy==1.8.0",
+    "pre-commit==3.6.0"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.black]
+line-length = 100
+target-version = ['py310']
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
