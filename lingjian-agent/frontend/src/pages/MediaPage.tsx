@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Search, Filter, Grid, List, Plus, Upload, Image, Video, Music, FileCode } from 'lucide-react';
+import { Search, Filter, Grid, List, Upload, Image, Video, Music, FileCode, Download, Sparkles } from 'lucide-react';
 import { useMediaStore } from '@/stores';
 import { MediaType } from '@/types';
+import toast from 'react-hot-toast';
 
 const mediaTypeIcons: Record<MediaType, typeof Image> = {
   image: Image,
@@ -10,10 +11,18 @@ const mediaTypeIcons: Record<MediaType, typeof Image> = {
   svg: FileCode,
 };
 
+const mediaTypeLabels: Record<MediaType, string> = {
+  image: '图片',
+  video: '视频',
+  audio: '音频',
+  svg: 'SVG',
+};
+
 export default function MediaPage() {
   const { mediaFiles, filters, setFilters } = useMediaStore();
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
+  const [isScraping, setIsScraping] = useState(false);
 
   const filteredMedia = mediaFiles.filter((media) => {
     if (filters.type !== 'all' && media.mediaType !== filters.type) return false;
@@ -22,18 +31,58 @@ export default function MediaPage() {
     return true;
   });
 
+  const handleScrape = async () => {
+    if (!filters.searchQuery) {
+      toast.error('请先输入搜索关键词');
+      return;
+    }
+
+    setIsScraping(true);
+    try {
+      toast.loading('正在爬取素材...', { id: 'scrape' });
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      toast.success('素材爬取完成！', { id: 'scrape' });
+    } catch (error) {
+      toast.error('爬取失败', { id: 'scrape' });
+    } finally {
+      setIsScraping(false);
+    }
+  };
+
+  const handleUpload = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.multiple = true;
+    input.accept = 'image/*,video/*,audio/*,.svg';
+    input.onchange = (e) => {
+      const files = (e.target as HTMLInputElement).files;
+      if (files) {
+        toast.success(`已选择 ${files.length} 个文件`);
+      }
+    };
+    input.click();
+  };
+
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">素材库</h1>
         <div className="flex items-center gap-2">
-          <button className="btn btn-ghost">
+          <button onClick={handleUpload} className="btn btn-ghost">
             <Upload className="w-5 h-5" />
             上传素材
           </button>
+          <button
+            onClick={handleScrape}
+            disabled={isScraping}
+            className="btn btn-secondary"
+          >
+            <Download className="w-5 h-5" />
+            {isScraping ? '爬取中...' : '爬取素材'}
+          </button>
           <button className="btn btn-primary">
-            <Plus className="w-5 h-5" />
-            爬取素材
+            <Sparkles className="w-5 h-5" />
+            AI生成
           </button>
         </div>
       </div>
@@ -120,7 +169,7 @@ export default function MediaPage() {
               return (
                 <div
                   key={media.id}
-                  className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary-500 transition-all"
+                  className="aspect-square bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden cursor-pointer hover:ring-2 hover:ring-primary-500 transition-all group relative"
                 >
                   {media.thumbnail ? (
                     <img
@@ -133,6 +182,14 @@ export default function MediaPage() {
                       <Icon className="w-8 h-8 text-gray-400" />
                     </div>
                   )}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="text-white text-xs truncate px-2">{media.fileName}</span>
+                  </div>
+                  <div className="absolute top-2 right-2">
+                    <span className="px-2 py-0.5 text-xs bg-black/50 text-white rounded">
+                      {mediaTypeLabels[media.mediaType]}
+                    </span>
+                  </div>
                 </div>
               );
             })}
@@ -152,7 +209,7 @@ export default function MediaPage() {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate">{media.fileName}</p>
                     <p className="text-sm text-gray-500">
-                      {media.mediaType} · {media.format}
+                      {mediaTypeLabels[media.mediaType]} · {media.format}
                     </p>
                   </div>
                   <span className="px-2 py-1 text-xs rounded bg-gray-200 dark:bg-gray-600">

@@ -2,42 +2,68 @@
 
 set -e
 
-echo "正在安装 灵剪Agent..."
+echo "=========================================="
+echo "  灵剪Agent - 智能视频创作助手"
+echo "=========================================="
+echo ""
 
-# 检查 Node.js
-if ! command -v node &> /dev/null; then
-    echo "错误: 需要安装 Node.js"
-    exit 1
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$PROJECT_ROOT"
+
+check_command() {
+    if ! command -v $1 &> /dev/null; then
+        echo "❌ 错误: 需要安装 $1"
+        exit 1
+    fi
+}
+
+echo "🔍 检查环境..."
+check_command python3
+check_command node
+check_command npm
+echo "✅ 环境检查通过"
+
+echo ""
+echo "📁 创建数据目录..."
+mkdir -p data/media
+mkdir -p data/temp
+mkdir -p data/chromadb
+mkdir -p data/projects
+echo "✅ 目录创建完成"
+
+echo ""
+echo "🔧 安装后端依赖..."
+cd backend
+if command -v uv &> /dev/null; then
+    uv pip install -r requirements.txt --system
+else
+    pip3 install -r requirements.txt
 fi
+cd ..
+echo "✅ 后端依赖安装完成"
 
-# 检查 Python
-if ! command -v python3 &> /dev/null; then
-    echo "错误: 需要安装 Python 3"
-    exit 1
-fi
-
-# 检查 FFmpeg
-if ! command -v ffmpeg &> /dev/null; then
-    echo "警告: FFmpeg 未安装，AI功能可能受限"
-fi
-
-echo "安装前端依赖..."
+echo ""
+echo "📦 安装前端依赖..."
 cd frontend
 npm install
-
-echo "安装后端依赖..."
-cd ../backend
-pip install -r requirements.txt
-
-echo "创建数据目录..."
-mkdir -p ../data/media
-mkdir -p ../data/temp
-mkdir -p ../data/chromadb
+cd ..
+echo "✅ 前端依赖安装完成"
 
 echo ""
-echo "安装完成！"
+echo "=========================================="
+echo "  安装完成！"
+echo "=========================================="
 echo ""
-echo "启动开发服务器:"
-echo "  后端: cd backend && uvicorn app.main:app --reload --port 8000"
-echo "  前端: cd frontend && npm run tauri dev"
+echo "启动方式："
+echo ""
+echo "1. 启动后端服务:"
+echo "   cd backend"
+echo "   python3 -m uvicorn app.main:app --reload --port 8000"
+echo ""
+echo "2. 启动前端开发服务器:"
+echo "   cd frontend"
+echo "   npm run dev"
+echo ""
+echo "或者使用快捷脚本:"
+echo "   ./scripts/start.sh"
 echo ""
