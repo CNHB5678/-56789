@@ -1,4 +1,4 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { useEditorStore } from '@/stores';
 
 type GridType = 'horizontal' | 'vertical' | 'both';
@@ -11,48 +11,63 @@ export default function VideoPreview({ gridType }: VideoPreviewProps) {
   const { showGrid } = useEditorStore();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
-  const gridSpacing = 60;
-
-  const gridLines = useMemo(() => {
-    const lines: JSX.Element[] = [];
-    
-    if (gridType === 'horizontal' || gridType === 'both') {
-      for (let y = gridSpacing; y < 1080; y += gridSpacing) {
-        lines.push(
-          <line
-            key={`h-${y}`}
-            x1="0"
-            y1={y}
-            x2="1920"
-            y2={y}
-            stroke="white"
-            strokeWidth="1.5"
-            opacity="1"
-          />
-        );
+  useEffect(() => {
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const { width, height } = containerRef.current.getBoundingClientRect();
+        setDimensions({ width, height });
       }
+    };
+
+    updateDimensions();
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    if (containerRef.current) {
+      resizeObserver.observe(containerRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  const gridLines = () => {
+    const lines: JSX.Element[] = [];
+    const { width, height } = dimensions;
+
+    if (width === 0 || height === 0) return lines;
+
+    if (gridType === 'horizontal' || gridType === 'both') {
+      lines.push(
+        <line
+          key="h-center"
+          x1="0"
+          y1={height / 2}
+          x2={width}
+          y2={height / 2}
+          stroke="white"
+          strokeWidth="2"
+          opacity="1"
+        />
+      );
     }
     
     if (gridType === 'vertical' || gridType === 'both') {
-      for (let x = gridSpacing; x < 1920; x += gridSpacing) {
-        lines.push(
-          <line
-            key={`v-${x}`}
-            x1={x}
-            y1="0"
-            x2={x}
-            y2="1080"
-            stroke="white"
-            strokeWidth="1.5"
-            opacity="1"
-          />
-        );
-      }
+      lines.push(
+        <line
+          key="v-center"
+          x1={width / 2}
+          y1="0"
+          x2={width / 2}
+          y2={height}
+          stroke="white"
+          strokeWidth="2"
+          opacity="1"
+        />
+      );
     }
     
     return lines;
-  }, [gridType]);
+  };
 
   return (
     <div ref={containerRef} className="h-full bg-black rounded-lg overflow-hidden relative">
@@ -72,14 +87,14 @@ export default function VideoPreview({ gridType }: VideoPreviewProps) {
         controls
       />
 
-      {showGrid && (
+      {showGrid && dimensions.width > 0 && dimensions.height > 0 && (
         <div className="absolute inset-0 pointer-events-none">
           <svg 
             className="w-full h-full" 
-            viewBox="0 0 1920 1080"
-            preserveAspectRatio="xMidYMid meet"
+            width={dimensions.width}
+            height={dimensions.height}
           >
-            {gridLines}
+            {gridLines()}
           </svg>
         </div>
       )}
