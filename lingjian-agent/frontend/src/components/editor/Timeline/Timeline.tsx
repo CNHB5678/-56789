@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react';
 import { useEditorStore } from '@/stores';
-import { ZoomIn, ZoomOut, GripVertical } from 'lucide-react';
+import { ZoomIn, ZoomOut, GripVertical, Eye, EyeOff, Volume2, VolumeX, Lock, Unlock } from 'lucide-react';
 
 interface TimelineProps {
   timelineScale: number;
@@ -14,6 +14,7 @@ export default function Timeline({ timelineScale, setTimelineScale }: TimelinePr
     selectedClipId,
     setSelectedClipId,
     setPlayheadPosition,
+    updateTrack,
     zoom,
   } = useEditorStore();
 
@@ -105,17 +106,54 @@ export default function Timeline({ timelineScale, setTimelineScale }: TimelinePr
 
       <div className="flex flex-1 overflow-hidden">
         {/* Track labels */}
-        <div className="w-24 flex-shrink-0 border-r bg-gray-50 dark:bg-gray-900">
+        <div className="w-32 flex-shrink-0 border-r bg-gray-50 dark:bg-gray-900">
           <div className="h-8" />
           {tracks.map((track, index) => (
             <div
               key={track.id}
-              className="h-20 flex items-center px-2 text-xs border-b border-gray-200 dark:border-gray-700"
+              className="h-20 flex flex-col justify-center px-2 text-xs border-b border-gray-200 dark:border-gray-700"
             >
-              <span className="mr-1">{getTrackTypeIcon(track.type)}</span>
-              <span className="font-medium text-gray-700 dark:text-gray-300 truncate">
-                {track.name}
-              </span>
+              <div className="flex items-center gap-1 mb-1">
+                <span className="mr-1">{getTrackTypeIcon(track.type)}</span>
+                <span className="font-medium text-gray-700 dark:text-gray-300 truncate flex-1">
+                  {track.name}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => updateTrack(track.id, { visible: !track.visible })}
+                  className={`p-1 rounded transition-colors ${
+                    track.visible 
+                      ? 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400' 
+                      : 'bg-gray-300 dark:bg-gray-600 text-gray-500'
+                  }`}
+                  title={track.visible ? '隐藏轨道' : '显示轨道'}
+                >
+                  {track.visible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                </button>
+                <button
+                  onClick={() => updateTrack(track.id, { muted: !track.muted })}
+                  className={`p-1 rounded transition-colors ${
+                    track.muted 
+                      ? 'bg-gray-300 dark:bg-gray-600 text-gray-500' 
+                      : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'
+                  }`}
+                  title={track.muted ? '取消静音' : '静音'}
+                >
+                  {track.muted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+                </button>
+                <button
+                  onClick={() => updateTrack(track.id, { locked: !track.locked })}
+                  className={`p-1 rounded transition-colors ${
+                    track.locked 
+                      ? 'bg-gray-300 dark:bg-gray-600 text-gray-500' 
+                      : 'hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'
+                  }`}
+                  title={track.locked ? '解锁轨道' : '锁定轨道'}
+                >
+                  {track.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                </button>
+              </div>
             </div>
           ))}
         </div>
