@@ -1,8 +1,10 @@
+import { useState } from 'react';
 import { useEditorStore, useProjectStore } from '@/stores';
 import Timeline from '@/components/editor/Timeline/Timeline';
 import VideoPreview from '@/components/editor/Preview/VideoPreview';
 import PropertyPanel from '@/components/editor/PropertyPanel/PropertyPanel';
-import { Play, Pause, SkipBack, SkipForward, Volume2, Grid, Scissors, MousePointer, Move } from 'lucide-react';
+import ExportPanel from '@/components/editor/ExportPanel';
+import { Play, Pause, SkipBack, SkipForward, Volume2, Grid, Scissors, MousePointer, Move, Download } from 'lucide-react';
 
 export default function EditorPage() {
   const {
@@ -19,6 +21,7 @@ export default function EditorPage() {
   } = useEditorStore();
 
   const { currentProject } = useProjectStore();
+  const [showExportPanel, setShowExportPanel] = useState(false);
 
   return (
     <div className="h-full flex flex-col">
@@ -80,6 +83,14 @@ export default function EditorPage() {
           >
             <Grid className="w-5 h-5" />
           </button>
+
+          <button
+            onClick={() => setShowExportPanel(true)}
+            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg flex items-center gap-2"
+          >
+            <Download className="w-5 h-5" />
+            导出
+          </button>
         </div>
 
         <div className="text-sm text-gray-500">
@@ -97,6 +108,11 @@ export default function EditorPage() {
       <div className="h-64 mt-4">
         <Timeline />
       </div>
+
+      <ExportPanel 
+        isOpen={showExportPanel} 
+        onClose={() => setShowExportPanel(false)} 
+      />
     </div>
   );
 }
