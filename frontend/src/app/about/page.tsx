@@ -84,7 +84,7 @@ export default function AboutPage() {
         </div>
       </header>
 
-      <section className="pt-32 pb-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      <section className="pt-32 pb-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500/20 rounded-full blur-3xl" />
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl" />
