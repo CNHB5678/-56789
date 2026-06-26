@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Film, Sparkles, Target, Users, Heart, ArrowRight, Zap, Shield, Globe } from 'lucide-react';
+import { Film, Sparkles, Target, Users, Heart, ArrowRight, Zap, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function AboutPage() {
@@ -91,10 +91,6 @@ export default function AboutPage() {
         </div>
 
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-slate-300 mb-8">
-            <Globe className="w-4 h-4 text-blue-400" />
-            <span>关于我们</span>
-          </div>
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
             用AI重新定义
             <br />
