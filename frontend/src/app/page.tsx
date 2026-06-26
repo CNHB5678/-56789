@@ -39,12 +39,10 @@ export default function HomePage() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <Film className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl font-bold text-white">AI视频创作</span>
+              <span className="text-xl font-bold text-white">剪映AI草稿</span>
             </div>
             <nav className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-slate-300 hover:text-white transition-colors">功能</a>
-              <a href="#pricing" className="text-slate-300 hover:text-white transition-colors">定价</a>
-              <a href="#about" className="text-slate-300 hover:text-white transition-colors">关于</a>
             </nav>
             <div className="flex items-center gap-3">
               <Link href="/login">
@@ -98,9 +96,9 @@ export default function HomePage() {
               </Button>
             </Link>
             <Button 
-              size="lg" 
-              variant="outline" 
-              className="w-full sm:w-auto text-base px-8 py-6 border-white/20 text-white hover:bg-white/10 hover:text-white"
+              size="lg"
+              variant="ghost"
+              className="w-full sm:w-auto text-base px-8 py-6 border border-white/20 bg-white/5 text-slate-200 hover:bg-white/15 hover:text-white transition-colors"
             >
               <Play className="mr-2 w-5 h-5" />
               查看演示
@@ -136,47 +134,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <section className="py-20 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-blue-600/20 via-purple-600/20 to-pink-600/20 border border-white/10 p-8 sm:p-12 text-center">
-            <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-transparent to-purple-500/10" />
-            <div className="relative z-10">
-              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4">
-                现在就开始你的AI创作之旅
-              </h2>
-              <p className="text-lg text-slate-300 mb-8 max-w-xl mx-auto">
-                注册即送免费创作额度，无需信用卡，立即体验
-              </p>
-              <Link href="/register">
-                <Button 
-                  size="lg" 
-                  className="text-base px-10 py-6 bg-white text-slate-900 hover:bg-slate-100"
-                >
-                  免费开始使用
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-white/10">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <Film className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-lg font-semibold text-white">AI视频创作</span>
-            </div>
-            <p className="text-slate-500 text-sm">
-              © 2024 AI视频创作平台. All rights reserved.
-            </p>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }
