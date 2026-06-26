@@ -83,8 +83,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   login: async (data) => {
-    const response = await post<{ user: User; token: string; refreshToken?: string }>('/auth/login', data);
-    const { user, token, refreshToken } = response;
+    const endpoint = data.code ? '/auth/login-phone' : '/auth/login-password';
+    const response = await post<{ access_token: string; refresh_token: string; user: User }>(endpoint, data);
+    const { access_token: token, refresh_token: refreshToken, user } = response;
     
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', token);
@@ -100,8 +101,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   register: async (data) => {
-    const response = await post<{ user: User; token: string; refreshToken?: string }>('/auth/register', data);
-    const { user, token, refreshToken } = response;
+    const response = await post<{ access_token: string; refresh_token: string; user: User }>('/auth/register', data);
+    const { access_token: token, refresh_token: refreshToken, user } = response;
     
     if (typeof window !== 'undefined') {
       localStorage.setItem('token', token);

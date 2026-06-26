@@ -73,6 +73,15 @@ export default function LoginPage() {
     }
   };
 
+  const getErrorMessage = (error: any): string => {
+    const detail = error.response?.data?.detail;
+    if (typeof detail === 'string') return detail;
+    if (Array.isArray(detail) && detail.length > 0) {
+      return detail[0]?.msg || '请检查输入信息';
+    }
+    return error.response?.data?.message || '请检查手机号和验证码/密码';
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -115,7 +124,7 @@ export default function LoginPage() {
       toast({
         variant: 'destructive',
         title: '登录失败',
-        description: error.response?.data?.message || '请检查手机号和验证码/密码',
+        description: getErrorMessage(error),
       });
     } finally {
       setIsLoading(false);
