@@ -43,6 +43,8 @@ export default function HomePage() {
             </div>
             <nav className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-slate-300 hover:text-white transition-colors">功能</a>
+              <Link href="/pricing" className="text-slate-300 hover:text-white transition-colors">定价</Link>
+              <Link href="/about" className="text-slate-300 hover:text-white transition-colors">关于</Link>
             </nav>
             <div className="flex items-center gap-3">
               <Link href="/login">
