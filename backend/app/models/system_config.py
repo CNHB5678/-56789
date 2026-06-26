@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Boolean, Text, DateTime, func, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
 from .mixins import UUIDMixin
 from ..core.database import Base
 

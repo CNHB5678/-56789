@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 120
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     
-    DATABASE_URL: str = "postgresql+asyncpg://jianying:jianying123@localhost:5432/jianying_ai"
+    DATABASE_URL: str = "sqlite+aiosqlite:///./jianying_ai.db"
     REDIS_URL: str = "redis://localhost:6379/0"
     
     STORAGE_TYPE: str = "minio"

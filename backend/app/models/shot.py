@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, BigInteger, Text, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Column, String, Integer, Float, BigInteger, Text, ForeignKey, Uuid, JSON
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin, TimestampMixin
 from ..core.database import Base
@@ -8,7 +7,7 @@ from ..core.database import Base
 class Shot(UUIDMixin, TimestampMixin, Base):
     __tablename__ = "shots"
 
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    project_id = Column(Uuid(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
     index = Column(Integer, nullable=False)
     
     start_us = Column(BigInteger, default=0, nullable=False)
@@ -16,10 +15,10 @@ class Shot(UUIDMixin, TimestampMixin, Base):
     text = Column(Text, default="")
     
     scene_description = Column(Text, default="")
-    keywords = Column(JSONB, default=list)
+    keywords = Column(JSON, default=list)
     emotion = Column(String(50), default="neutral")
     
-    bg_image_id = Column(UUID(as_uuid=True), ForeignKey("files.id"), nullable=True)
+    bg_image_id = Column(Uuid(as_uuid=True), ForeignKey("files.id"), nullable=True)
     bg_prompt = Column(Text, default="")
     
     bg_scale = Column(Float, default=1.0)

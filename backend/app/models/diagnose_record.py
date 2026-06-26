@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, Text
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Column, String, Integer, DateTime, Text, JSON
 from .mixins import UUIDMixin
 from ..core.database import Base
 
@@ -16,6 +15,6 @@ class DiagnoseRecord(UUIDMixin, Base):
     warnings = Column(Integer, default=0, nullable=False)
     failed = Column(Integer, default=0, nullable=False)
     
-    results = Column(JSONB, default=list)
+    results = Column(JSON, default=list)
     triggered_by = Column(String(20), default="manual", nullable=False)
     created_at = Column(DateTime(timezone=True), nullable=False)

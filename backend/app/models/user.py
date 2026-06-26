@@ -1,5 +1,4 @@
 from sqlalchemy import Column, String, Boolean, Integer, Date
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin, TimestampMixin
 from ..core.database import Base

@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin
 from ..core.database import Base
@@ -8,7 +7,7 @@ from ..core.database import Base
 class CeleryTaskLog(UUIDMixin, Base):
     __tablename__ = "celery_task_logs"
 
-    project_id = Column(UUID(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
+    project_id = Column(Uuid(as_uuid=True), ForeignKey("projects.id", ondelete="CASCADE"), nullable=False, index=True)
     stage = Column(Integer, nullable=False)
     stage_name = Column(String(50), nullable=False)
     

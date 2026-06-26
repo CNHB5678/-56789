@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Integer, Text, DateTime, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin, TimestampMixin
 from ..core.database import Base
@@ -19,10 +18,10 @@ class SystemNotification(UUIDMixin, TimestampMixin, Base):
     failed_count = Column(Integer, default=0, nullable=False)
     
     trigger_source = Column(String(50), default="manual", nullable=False)
-    related_diagnose_id = Column(UUID(as_uuid=True), ForeignKey("diagnose_records.id"), nullable=True)
+    related_diagnose_id = Column(Uuid(as_uuid=True), ForeignKey("diagnose_records.id"), nullable=True)
     
     scheduled_at = Column(DateTime(timezone=True), nullable=True)
     sent_at = Column(DateTime(timezone=True), nullable=True)
-    created_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    created_by = Column(Uuid(as_uuid=True), ForeignKey("users.id"), nullable=True)
 
     notification_logs = relationship("NotificationLog", back_populates="notification", cascade="all, delete-orphan")

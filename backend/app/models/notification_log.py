@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Text, DateTime, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Text, DateTime, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin
 from ..core.database import Base
@@ -8,8 +7,8 @@ from ..core.database import Base
 class NotificationLog(UUIDMixin, Base):
     __tablename__ = "notification_logs"
 
-    notification_id = Column(UUID(as_uuid=True), ForeignKey("system_notifications.id", ondelete="CASCADE"), nullable=False, index=True)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    notification_id = Column(Uuid(as_uuid=True), ForeignKey("system_notifications.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(Uuid(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     
     channel = Column(String(20), nullable=False)
     status = Column(String(20), default="pending", nullable=False, index=True)

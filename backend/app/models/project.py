@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, BigInteger, ForeignKey, Text
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy import Column, String, Integer, Boolean, BigInteger, ForeignKey, Text, Uuid, JSON
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin, TimestampMixin
 from ..core.database import Base
@@ -8,7 +7,7 @@ from ..core.database import Base
 class Project(UUIDMixin, TimestampMixin, Base):
     __tablename__ = "projects"
 
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
+    user_id = Column(Uuid(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     title = Column(String(200), nullable=False)
     mode = Column(String(20), nullable=False)
     
@@ -22,10 +21,10 @@ class Project(UUIDMixin, TimestampMixin, Base):
     canvas_height = Column(Integer, default=960, nullable=False)
     
     subtitle_enabled = Column(Boolean, default=True, nullable=False)
-    subtitle_style = Column(JSONB, default=dict)
-    bgm_file_id = Column(UUID(as_uuid=True), ForeignKey("files.id"), nullable=True)
+    subtitle_style = Column(JSON, default=dict)
+    bgm_file_id = Column(Uuid(as_uuid=True), ForeignKey("files.id"), nullable=True)
     
-    original_audio_id = Column(UUID(as_uuid=True), ForeignKey("files.id"), nullable=True)
+    original_audio_id = Column(Uuid(as_uuid=True), ForeignKey("files.id"), nullable=True)
     draft_zip_path = Column(String(500))
     preview_video_path = Column(String(500))
     export_video_path = Column(String(500))

@@ -1,5 +1,4 @@
-from sqlalchemy import Column, String, Integer, Float, BigInteger, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy import Column, String, Integer, Float, BigInteger, ForeignKey, Uuid
 from sqlalchemy.orm import relationship
 from .mixins import UUIDMixin, TimestampMixin
 from ..core.database import Base
@@ -8,11 +7,11 @@ from ..core.database import Base
 class ForegroundObject(UUIDMixin, TimestampMixin, Base):
     __tablename__ = "foreground_objects"
 
-    shot_id = Column(UUID(as_uuid=True), ForeignKey("shots.id", ondelete="CASCADE"), nullable=False, index=True)
+    shot_id = Column(Uuid(as_uuid=True), ForeignKey("shots.id", ondelete="CASCADE"), nullable=False, index=True)
     name = Column(String(200), nullable=False)
     
-    image_id = Column(UUID(as_uuid=True), ForeignKey("files.id"), nullable=True)
-    matting_image_id = Column(UUID(as_uuid=True), ForeignKey("files.id"), nullable=True)
+    image_id = Column(Uuid(as_uuid=True), ForeignKey("files.id"), nullable=True)
+    matting_image_id = Column(Uuid(as_uuid=True), ForeignKey("files.id"), nullable=True)
     prompt = Column(String(1000), default="")
     
     scale = Column(Float, default=1.0)
